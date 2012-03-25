@@ -12,13 +12,14 @@ function GameState(){
 	this.dices = [];
 	this.current_player=1;
 	this.init();
+	this.test();
 };
 
 GameState.prototype.init = function(){
 	for(var i=0; i<3; i++){
-		this.punts.push(new Punt(i+1));
+		this.punts.push(new Punt(i));
 	}
-	var i=0;
+	var i=-1;
 	nutme_spaces = [new Space(++i, 2, 0), new Space(++i, 3, 0), new Space(++i, 4, 0)]; // for nutme
 	silk_spaces = [new Space(++i, 3, 0), new Space(++i, 4, 0), new Space(++i, 5, 0)]; // for silk
 	ginseng_spaces = [new Space(++i, 1, 0), new Space(++i, 2, 0), new Space(++i, 3, 0)]; // for  ginseng
@@ -49,6 +50,12 @@ GameState.prototype.init = function(){
 		}
 	}
 };
+
+GameState.prototype.test = function(){
+	for(var i=0; i<this.punts.length; i++){
+		this.punts[i].ware = this.wares[i+1];
+	}
+}
 
 
 

@@ -1,0 +1,25 @@
+body{
+	margin:0px;
+}
+
+#map{
+	margin:0 auto;
+	position:relative;
+/*	width:1000px;
+	height:1500px;*/
+/*	background:url("images/map_bg.jpg");*/
+}
+
+canvas{
+	position: absolute;
+	top:0px;
+	left: 0px;
+}
+
+
+.punt-viewer {
+	position:absolute;
+	left:0;
+	top:0;
+	z-index: 300;
+}

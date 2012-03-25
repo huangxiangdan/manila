@@ -1,5 +1,5 @@
 function Punt(id){
-	this.id = 0;
+	this.id = id;
 	this.position = 0;
 	this.ware = null;
 };

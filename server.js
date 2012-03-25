@@ -6,9 +6,14 @@ require('jade');
 app.set('view engine', 'jade');
 app.set('view options', {layout: false});
 
-app.get('/*.(js|css)' , function(req, res) {
+app.get('/common/*.(js|css|jpg|png)' , function(req, res) {
+	res.sendfile("."+req.url);
+});
+
+
+app.get('/*.(js|css|jpg|png)' , function(req, res) {
 	res.sendfile("./public"+req.url);
-})
+});
 
 app.get('/', function(req, res) {
 	console.log("rendered index");
@@ -18,7 +23,6 @@ app.get('/', function(req, res) {
 
 io.on("connection", function(client) {
 	console.log("connection");
-	console.log(client);
 	var player_id = GameEngine.add_player();
 	
 	client.emit("assign_id", {id: player_id});
