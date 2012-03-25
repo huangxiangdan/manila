@@ -29,7 +29,7 @@ var game_engine = {
 	
 	handle_action : function(action) {
 		//perform action
-		if(action.type == "dice") {
+		if(action.type === "dice") {
 			//
 			this.roll_dice();
 		}
@@ -37,7 +37,16 @@ var game_engine = {
 		
 	},
 	roll_dice : function() {
+		for (var i = 0; i < this.game_state.punts.length; i++) {
+			var punt = this.game_state.punts[i];
+			punt.position += (1 + Math.floor(Math.random() * 6));
+		}
 		
+	},
+	
+	init : function() {
+		this.game_state = new GameState();
+		return this;
 	}
 	
 }
