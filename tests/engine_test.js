@@ -112,7 +112,21 @@ exports.testSpaces = function(test) {
 
 exports.testAdvancePhase = function(test) {
 	//create engine
+	var engine = require("../engine").init();
+	engine.add_player();
+	engine.add_player();
+	engine.add_player();
+	engine.get_gamestate().phase = phases[3];
+	
 	//have everyone place a dude
+	var players = engine.get_gamestate().players;
+	test.ok(engine.handle_action({type : "place", player_id: players[0].id, space_id:3}), "place 1");
+	test.equal(phases[3], engine.get_gamestate().phase);
+	test.ok(engine.handle_action({type : "place", player_id: players[0].id, space_id:4}), "place 2");
+	test.equal(phases[3], engine.get_gamestate().phase);
+	test.ok(engine.handle_action({type : "place", player_id: players[0].id, space_id:5}), "place 3");
+	test.equal(phases[4], engine.get_gamestate().phase, "advance to next phase");
+	
 	//check that the turn has advanced
 	//check that dice got rolled
 	test.done();
