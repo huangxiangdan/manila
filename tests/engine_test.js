@@ -193,13 +193,15 @@ exports.computeRoundResult = function(test) {
 	
 
 	//everyone's money is updated
-	test.equal(94, players[1].money, "player 1 loot")
+	test.equal(54, players[1].money, "player 1 loot")
 	test.equal(56, players[2].money, "player 2 loot")
-	//stock price adjusted
-	//
+
+	//compute final score
+	test.equal(94, players[1].total_score(engine.get_gamestate()), "player 1's score including stocks")
 	
 	test.done();
 }
+
 
 
 

@@ -9,4 +9,14 @@ function Player(id, name){
 	this.roleId = 0; //0 for normal, 1 for harbor maste, 2 for bank
 };
 
+Player.prototype.total_score = function(game_state) {
+	//compute price of shares
+	var share_prices = game_state.share_prices;
+	var sum = 0;
+	for(var share_name in this.shares) {
+		sum += (share_prices[share_name] * this.shares[share_name])
+	}
+	return this.money + sum;
+}
+
 module.exports = Player;

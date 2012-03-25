@@ -159,18 +159,7 @@ var game_engine = {
 			if(space.owner !== null) {
 				players[space.owner].money += space.earn;
 			}
-		}
-		
-		//compute price of shares
-		var share_prices = this.game_state.share_prices;
-		for(var i = 0; i < players.length; i++) {
-			var player = players[i];
-			var sum = 0;
-			for(var share_name in player.shares) {
-				sum += (share_prices[share_name]*player.shares[share_name])
-			}
-			player.money += sum;
-		}
+		}		
 	},
 	
 	spaces_with_ware : function(ware, skip_empty) {
