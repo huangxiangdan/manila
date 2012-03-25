@@ -18,16 +18,18 @@ app.get('/', function(req, res) {
 
 io.on("connection", function(client) {
 	console.log("connection");
+	console.log(client);
 	var player_id = GameEngine.add_player();
 	
 	client.emit("assign_id", {id: player_id});
-	
 	io.sockets.emit('game_state', GameEngine.get_gamestate());
+	
 	client.on("disconnect", function() {
 		GameEngine.remove_player(client);
 	});
-	client.on("action", function() {
-		GameEngine.next_player();
+	
+	client.on("action", function(action) {
+		GameEngine.handle_action(action);
 		io.sockets.emit('game_state', GameEngine.get_gamestate());
 	})
 });

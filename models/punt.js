@@ -1,6 +1,7 @@
-function punt(id){
+function Punt(id){
 	this.id = 0;
 	this.position = 0;
-	this.in_water = false;
 	this.ware = null;
 };
+
+module.exports = Punt;

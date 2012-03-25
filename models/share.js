@@ -3,3 +3,5 @@ function Share(id, ware){
 	this.ware = null;
 	this.owner = null;
 };
+
+module.exports = Share;

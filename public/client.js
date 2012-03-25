@@ -1,5 +1,5 @@
 function update(game_state) {
-	$num_players.html(game_state.num_players);
+	$num_players.html(game_state.players.length);
 	$current_player.html(game_state.current_player);
 }
 

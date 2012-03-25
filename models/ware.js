@@ -5,3 +5,5 @@ function Ware(id, name, earn, spaces){
 	this.price = 0;
 	this.spaces = spaces;
 };
+
+module.exports = Ware;

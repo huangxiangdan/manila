@@ -7,3 +7,5 @@ function Player(id, name){
 	this.money = 0;
 	this.roleId = 0; //0 for normal, 1 for harbor maste, 2 for bank
 };
+
+module.exports = Player;
