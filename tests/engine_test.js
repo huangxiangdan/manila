@@ -32,6 +32,23 @@ exports.testPunts = function(test) {
 	test.done();
 }
 
+exports.chooseWare = function(test) {
+	var engine = require("../engine").init();
+
+	//choose ware
+	var action = {type : "choose_ware", player_id: 0, first_ware: "jade", second_ware: "silk", third_ware: "ginseng"}
+	test.ok(engine.handle_action(action), "choose ware action should succeed");
+	
+	var ships = engine.get_gamestate().punts;
+	test.equal(3, ships.length);
+	test.equal("jade", ships[0].ware, "first ship should have jade");
+	test.equal("silk", ships[1].ware, "second ship should have silk");
+	test.equal("ginseng", ships[2].ware, "third ship should have ginseng");
+
+	test.done();	
+}
+
+
 exports.testDice = function(test){
 	var engine = require("../engine").init();
 	engine.add_player();
@@ -183,7 +200,6 @@ exports.computeRoundResult = function(test) {
 	
 	test.done();
 }
-
 
 
 

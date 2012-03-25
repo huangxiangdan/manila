@@ -33,8 +33,10 @@ var game_engine = {
 		if(action.type === "dice") {
 			this.roll_dice();
 			return true;
-		} else if (action.type == "place") {
+		} else if (action.type === "place") {
 			return this.place_dude(action);
+		} else if (action.type === "choose_ware") {
+			return this.choose_ware(action);
 		}
 		return false;
 	},
@@ -72,6 +74,14 @@ var game_engine = {
 		this.next_player();
 		this.advance_phase();
 	
+		return true;
+	},
+	
+	choose_ware : function(action) {
+		var ships = this.game_state.punts;
+		ships[0].ware = action.first_ware;
+		ships[1].ware = action.second_ware;
+		ships[2].ware = action.third_ware;
 		return true;
 	},
 	
