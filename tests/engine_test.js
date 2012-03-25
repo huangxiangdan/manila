@@ -1,9 +1,3 @@
-exports.testSanity = function(test){
-    test.expect(1);
-    test.ok(true, "this assertion should pass");
-    test.done();
-};
-
 exports.testAddPlayers = function(test){
 	var engine = require("../engine").init();
 	var state = engine.get_gamestate();
@@ -165,7 +159,10 @@ exports.computeRoundResult = function(test) {
 	engine.add_player();
 	engine.add_player();
 	engine.add_player();
+	var players = engine.get_gamestate().players;
 	
+	//give players some shares
+	players[1].shares["jade"] = 2
 	
 	//set up some positions
 	var spaces = engine.get_gamestate().spaces
@@ -184,6 +181,9 @@ exports.computeRoundResult = function(test) {
 	punts[2].ware = "jade";
 	punts[2].position = 18;
 	
+	//set some share prices
+	engine.get_gamestate().share_prices["jade"] = 20;
+	
 	//call compute round
 	engine.compute_round_score();
 	
@@ -191,9 +191,9 @@ exports.computeRoundResult = function(test) {
 	//player 1 and 2 gets to split silk's 36(+ 18 each)
 	//player 1 gets 4 points for a ship crossing and player 2 gets +6 points for 2 ships crossing
 	
-	var players = engine.get_gamestate().players;
+
 	//everyone's money is updated
-	test.equal(54, players[1].money, "player 1 loot")
+	test.equal(94, players[1].money, "player 1 loot")
 	test.equal(56, players[2].money, "player 2 loot")
 	//stock price adjusted
 	//

@@ -1,5 +1,4 @@
 var Punt = require('../models/punt.js');
-var Share = require('../models/share.js');
 var Space = require('../models/space.js');
 var Ware = require('../models/ware.js');
 
@@ -14,7 +13,8 @@ var phases = [	"auction_phase",
 
 function GameState(){
 	this.players = [];
-	this.shares = [];
+	this.shares = {};
+	this.share_prices = {};
 	this.spaces = [];
 	this.punts = [];
 	this.wares = [];
@@ -54,12 +54,8 @@ GameState.prototype.init = function(){
 	jade_ware = new Ware(++i, "玉石", 36, jade_spaces);
 	this.wares = [nutme_ware, silk_ware, ginseng_ware, jade_ware];
 
-	var i=0;
-	for(var k=0; k<this.wares.length; k++){
-		for(var j=0; j<5; j++){
-			this.shares.push(new Share(++i, this.wares[k]));		
-		}
-	}
+	this.shares = {"nutme" : 5, "ginseng" : 5, "silk" : 5, "jade" : 5}
+	this.share_prices = {"nutme" : 5, "ginseng" : 5, "silk" : 5, "jade" : 5}
 };
 
 module.exports = GameState;
