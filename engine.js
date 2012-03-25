@@ -3,7 +3,9 @@ num_players = 0;
 current_player = 1;
 
 function add_player() {
+	var player_id = num_players;
 	num_players += 1;
+	return player_id;
 };
 
 function remove_player(client) {
@@ -20,7 +22,8 @@ function next_player() {
 
 function get_gamestate() {
 	return {
-		"num_players" : num_players
+		"num_players" : num_players,
+		"current_player" : current_player
 	}
 }
 exports.add_player = add_player;
