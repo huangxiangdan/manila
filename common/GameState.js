@@ -33,17 +33,10 @@ GameState.prototype.init = function(){
 		this.punts.push(new Punt(i));
 	}
 	var i=-1;
-<<<<<<< HEAD
-	nutme_spaces = [new Space(++i, 2, 0), new Space(++i, 3, 0), new Space(++i, 4, 0)]; // for nutme
-	silk_spaces = [new Space(++i, 3, 0), new Space(++i, 4, 0), new Space(++i, 5, 0)]; // for silk
-	ginseng_spaces = [new Space(++i, 1, 0), new Space(++i, 2, 0), new Space(++i, 3, 0)]; // for  ginseng
-	jade_spaces = [new Space(++i, 3, 0), new Space(++i, 4, 0), new Space(++i, 4, 0), new Space(++i, 5, 0)]; // for jade
-=======
 	nutme_spaces = [new Space(++i, 2, 0, "nutme"), new Space(++i, 3, 0, "nutme"), new Space(++i, 4, 0, "nutme")]; // for nutme
 	silk_spaces = [new Space(++i, 3, 0, "silk"), new Space(++i, 4, 0, "silk"), new Space(++i, 5, 0, "silk")]; // for silk
 	ginseng_spaces = [new Space(++i, 1, 0, "ginseng"), new Space(++i, 2, 0, "ginseng"), new Space(++i, 3, 0, "ginseng")]; // for  ginseng
 	jade_spaces = [new Space(++i, 3, 0, "jade"), new Space(++i, 4, 0, "jade"), new Space(++i, 4, 0, "jade"), new Space(++i, 5, 0, "jade")]; // for jade
->>>>>>> 699ee7b0bcc55c1b27e89f0c337025ee0d8b5152
 	wharf_spaces = [new Space(++i, 4, 6), new Space(++i, 3, 8), new Space(++i, 2, 15)];
 	shipyard_spaces = [new Space(++i, 4, 6), new Space(++i, 3, 8), new Space(++i, 2, 15)];
 	insurance_spaces = [new Space(++i, -10, 0)];
@@ -56,7 +49,7 @@ GameState.prototype.init = function(){
 	this.spaces = this.spaces.concat(shipyard_spaces);
 	this.spaces = this.spaces.concat(insurance_spaces);
 
-	var i=0;
+	var i=-1;
 	nutme_ware = new Ware(++i, "肉豆蔻", 24, nutme_spaces);
 	silk_ware = new Ware(++i, "丝绸", 30, silk_spaces);
 	ginseng_ware = new Ware(++i, "人参", 18, ginseng_spaces);
@@ -67,15 +60,10 @@ GameState.prototype.init = function(){
 	this.share_prices = {"nutme" : 5, "ginseng" : 5, "silk" : 5, "jade" : 5}
 };
 
-<<<<<<< HEAD
 GameState.prototype.test = function(){
 	for(var i=0; i<this.punts.length; i++){
 		this.punts[i].ware = this.wares[i+1];
 	}
 }
 
-
-
-=======
->>>>>>> 699ee7b0bcc55c1b27e89f0c337025ee0d8b5152
 module.exports = GameState;

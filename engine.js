@@ -136,7 +136,7 @@ var game_engine = {
 	},
 	
 	end_conditions_met : function() {
-		for(var share_name : this.game_state.share_prices) {
+		for(var share_name in this.game_state.share_prices) {
 			if (this.game_state.share_prices[share_name] >= 30) {
 				return true;
 			}

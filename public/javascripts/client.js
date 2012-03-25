@@ -63,7 +63,7 @@ function init(){
 
 function fillSpace(spaceId){
 	alert(spaceId);
-	socket.emit("action", spaceId);
+	socket.emit("action", {type : "place", player_id: my_id, space_id:spaceId});
 }
 
 function bindSocket(){
@@ -80,6 +80,7 @@ function bindSocket(){
 	
 	socket.on("assign_id", function(data) {
 		// console.log(data);
+		my_id = data.id;
 		$my_id.html(data.id);
 	});
 	
