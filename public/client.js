@@ -1,6 +1,10 @@
 function update(game_state) {
+	$("#players").html($.toJSON(game_state.players));
+	$("#phase").html(game_state.phase);
+	$("#spaces").html($.toJSON(game_state.spaces));
 	$num_players.html(game_state.players.length);
-	$current_player.html(game_state.current_player);
+	$current_player.html(game_state.current_player_id);
+	$ships.html($.toJSON(game_state.punts));
 }
 
 $(document).ready(function() {
@@ -8,6 +12,7 @@ $(document).ready(function() {
 	$num_players = $("#num_players")
 	$current_player = $("#current_player")
 	$my_id = $("#my_id")
+	$ships = $("#ships");
 
 	var socket = io.connect('http://localhost:3000');
 
@@ -23,7 +28,7 @@ $(document).ready(function() {
 	
 	$("#act").click(function(e) {
 		console.log("act");
-		socket.emit("action", 1);
+		socket.emit("action", {type:"dice"});
 		e.preventDefault();
 		
 	})

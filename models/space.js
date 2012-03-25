@@ -1,7 +1,7 @@
 function Space(id, payment, earn){
-	this.id = 0;
-	this.payment = 0;
-	this.earn = 0;
+	this.id = id;
+	this.payment = payment;
+	this.earn = earn;
 	this.owner = null;
 };
 

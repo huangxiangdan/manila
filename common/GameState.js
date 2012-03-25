@@ -3,6 +3,15 @@ var Share = require('../models/share.js');
 var Space = require('../models/space.js');
 var Ware = require('../models/ware.js');
 
+var phases = [	"auction_phase",
+				"buy_stock_phase",
+				"choose_ships_phase",
+				"first_choose_spaces_phase",
+				"second_choose_spaces_phase",
+				"third_choose_spaces_phase",
+				"move_ship_phase" //+1, +2
+			];
+
 function GameState(){
 	this.players = [];
 	this.shares = [];
@@ -10,7 +19,9 @@ function GameState(){
 	this.punts = [];
 	this.wares = [];
 	this.dices = [];
-	this.current_player=1;
+	this.current_player_id = 0;
+	this.phase = phases[0];
+	this.acted_players = 0; //number of players who has acted in current phase
 	this.init();
 };
 
@@ -49,7 +60,5 @@ GameState.prototype.init = function(){
 		}
 	}
 };
-
-
 
 module.exports = GameState;
