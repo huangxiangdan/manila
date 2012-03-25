@@ -50,10 +50,18 @@ var game_engine = {
 		//assert it is the correct turn
 		
 		var space = this.game_state.spaces[action.space_id];
+		
+		//can't place on owned square
+		console.log("space owner " + space.owner)
+		if(space.owner != null) {
+			return false;
+		}
+		
 		space.owner = action.player_id;
 		var player = this.game_state.players[action.player_id];
 		player.money -= space.payment;
 		this.next_player();
+		return true;
 	},
 	
 	is_currect_player : function(action) {

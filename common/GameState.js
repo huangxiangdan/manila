@@ -20,6 +20,7 @@ function GameState(){
 	this.wares = [];
 	this.dices = [];
 	this.current_player_id = 0;
+	this.captain_id = 0;
 	this.phase = phases[0];
 	this.acted_players = 0; //number of players who has acted in current phase
 	this.init();

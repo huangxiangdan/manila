@@ -82,7 +82,10 @@ exports.testSpaces = function(test) {
 	
 	//place a guy on top of a space
 	var action = {type : "place", player_id: players[0].id, space_id:3}
-	engine.handle_action(action);
+	var result = engine.handle_action(action);
+	
+	test.ok(result, "first placement should succeed");
+	
 	spaces = engine.get_gamestate().spaces;
 	players = engine.get_gamestate().players;
 	
@@ -92,6 +95,9 @@ exports.testSpaces = function(test) {
 	test.equal(27, players[0].money, "player 1 should have paid for the space");
 	
 	test.equal(1, engine.get_gamestate().current_player_id, "current player cursor should move");
+	
+	action = {type : "place", player_id: players[1].id, space_id:3}
+	test.ok(!engine.handle_action(action), "can't place on same square");
 	
 	test.done();
 }
