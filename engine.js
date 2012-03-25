@@ -1,33 +1,33 @@
 //the game engine
-num_players = 0;
-current_player = 1;
+var game_engine = {
 
-function add_player() {
-	var player_id = num_players;
-	num_players += 1;
-	return player_id;
-};
+	num_players : 0,
+	current_player : 1,
 
-function remove_player(client) {
-	console.log("removing " + client);
-	num_players -=1;
-}
+	add_player : function() {
+		var player_id = this.num_players;
+		this.num_players += 1;
+		return player_id;
+	},
 
-function next_player() {
-	if (num_players == 0) {
-		return 0;
+	remove_player : function(client) {
+		console.log("removing " + client);
+		this.num_players -=1;
+	},
+
+	next_player : function() {
+		if (this.num_players == 0) {
+			return 0;
+		}
+		this.current_player = (this.current_player + 1) % this.num_players;
+	},
+
+	get_gamestate : function() {
+		return {
+			"num_players" : this.num_players,
+			"current_player" : this.current_player
+		}
 	}
-	current_player = (current_player + 1) % num_players;
 }
 
-function get_gamestate() {
-	return {
-		"num_players" : num_players,
-		"current_player" : current_player
-	}
-}
-exports.add_player = add_player;
-exports.remove_player = remove_player;
-exports.next_player = next_player;
-exports.get_gamestate = get_gamestate;
-
+module.exports = game_engine;
