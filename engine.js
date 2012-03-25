@@ -47,6 +47,9 @@ var game_engine = {
 	
 	place_dude : function(action) {
 		//assert it is the current player
+		if(!is_currect_player(action)) {
+			return false;
+		}
 		//assert it is the correct turn
 		
 		var space = this.game_state.spaces[action.space_id];
