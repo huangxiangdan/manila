@@ -18,17 +18,26 @@ exports.testAddPlayers = function(test){
     test.done();
 };
 
+exports.testPunts = function(test) {
+	var engine = require("../engine").init();
+	var punts = engine.get_gamestate().punts;
+	test.equal(3, punts.length);
+	for(var i = 0; i< punts.length; i++) {
+		var punt = punts[i];
+		test.equal(i, punt.id, "ships should have advancing ids");
+		test.ok(punt.ware === null, "ships start out with no wares");
+		test.equal(0, punt.position, "all ships start on zero");
+	}
+	
+	test.done();
+}
+
 exports.testDice = function(test){
 	var engine = require("../engine").init();
 	engine.add_player();
 	engine.add_player();
 	var state = engine.get_gamestate();
     test.equal(state.players.length, 2, "the game should have 2 players");
-
-	for (var i = 0; i < state.punts.length; i++) {
-		var punt = state.punts[i];
-		test.equal(0, punt.position, "all ships start on zero");
-	}
 	
 	var action = {type : "dice"}
 	engine.handle_action(action);
@@ -116,22 +125,64 @@ exports.testAdvancePhase = function(test) {
 	engine.add_player();
 	engine.add_player();
 	engine.add_player();
-	engine.get_gamestate().phase = phases[3];
+	engine.get_gamestate().phase = 3;
 	
 	//have everyone place a dude
 	var players = engine.get_gamestate().players;
 	test.ok(engine.handle_action({type : "place", player_id: players[0].id, space_id:3}), "place 1");
-	test.equal(phases[3], engine.get_gamestate().phase);
-	test.ok(engine.handle_action({type : "place", player_id: players[0].id, space_id:4}), "place 2");
-	test.equal(phases[3], engine.get_gamestate().phase);
-	test.ok(engine.handle_action({type : "place", player_id: players[0].id, space_id:5}), "place 3");
-	test.equal(phases[4], engine.get_gamestate().phase, "advance to next phase");
+	test.equal(3, engine.get_gamestate().phase);
+	test.ok(engine.handle_action({type : "place", player_id: players[1].id, space_id:4}), "place 2");
+	test.equal(3, engine.get_gamestate().phase);
+	test.ok(engine.handle_action({type : "place", player_id: players[2].id, space_id:5}), "place 3");
+	test.equal(4, engine.get_gamestate().phase, "advance to next phase");
 	
 	//check that the turn has advanced
 	//check that dice got rolled
 	test.done();
 }
 
+
+exports.computeRoundResult = function(test) {
+	//create engine
+	var engine = require("../engine").init();
+	engine.add_player();
+	engine.add_player();
+	engine.add_player();
+	
+	
+	//set up some positions
+	var spaces = engine.get_gamestate().spaces
+	spaces[0].owner = 1;
+	spaces[3].owner = 1;
+	spaces[4].owner = 2;	
+	spaces[13].owner = 1;
+	spaces[14].owner = 2;
+
+	//setup ship
+	var punts = engine.get_gamestate().punts
+	punts[0].ware = "silk";
+	punts[0].position = 16;
+	punts[1].ware = "nutme";
+	punts[1].position = 12;
+	punts[2].ware = "jade";
+	punts[2].position = 18;
+	
+	//call compute round
+	engine.compute_round_score();
+	
+	//check the following conditions:
+	//player 1 and 2 gets to split silk's 36(+ 18 each)
+	//player 1 gets 4 points for a ship crossing and player 2 gets +6 points for 2 ships crossing
+	
+	var players = engine.get_gamestate().players;
+	//everyone's money is updated
+	test.equal(54, players[1].money, "player 1 loot")
+	test.equal(56, players[2].money, "player 2 loot")
+	//stock price adjusted
+	//
+	
+	test.done();
+}
 
 
 

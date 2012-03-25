@@ -20,6 +20,7 @@ var game_engine = {
 		if (this.num_players == 0) {
 			return 0;
 		}
+		this.game_state.acted_players += 1;
 		this.game_state.current_player_id = (this.game_state.current_player_id + 1) % this.game_state.players.length;
 	},
 
@@ -69,6 +70,8 @@ var game_engine = {
 
 		player.money -= space.payment;
 		this.next_player();
+		this.advance_phase();
+	
 		return true;
 	},
 	
@@ -79,6 +82,99 @@ var game_engine = {
 	init : function() {
 		this.game_state = new GameState();
 		return this;
+	},
+	
+	advance_phase : function() {
+		var end_of_placement = function(engine) {
+			engine.game_state.phase += 1;
+			engine.game_state.acted_players = 0;
+			engine.game_state.current_player_id = engine.game_state.captain_id;
+			engine.roll_dice();			
+		}
+		switch(this.game_state.phase) {
+			case 3: {
+				//check phase
+				if(this.game_state.acted_players == this.game_state.players.length) {
+					end_of_placement(this);
+				}
+				break;
+			}
+			case 4: {
+				//check phase
+				if(this.game_state.acted_players == this.game_state.players.length) {
+					end_of_placement(this);
+				}
+				break;
+			}
+			
+			case 5: {
+				//check phase
+				if(this.game_state.acted_players == this.game_state.players.length) {
+					end_of_placement(this);
+					this.compute_round_result();
+				}
+				break;
+			}
+		}
+		
+	},
+	
+	compute_round_score : function() {
+		//tally up the score
+		var ships_crossed = 0;
+		var ships = this.game_state.punts;
+		var players = this.game_state.players;
+		for(var i = 0; i < ships.length; i++) {
+			var ship = ships[i];
+			if(ship.position > 13) {
+				console.log("crossed:" + ship.ware)
+				ships_crossed += 1;
+				
+				var spaces = this.spaces_with_ware(ship.ware, true);
+				console.log("spaces with " + ship.ware + ":" + spaces.length);
+				var loot = spaces.length === 0 ? 0 : this.value_of_ware(ship.ware) / spaces.length;
+				for(var j = 0; j < spaces.length; j++) {
+					var space = spaces[j];
+					players[space.owner].money += loot;
+				}
+				
+			}
+			
+		}
+		
+		//now assign the rest of spaces
+		var spaces = this.game_state.spaces;
+		for(var i = 13; i < spaces.length; i++) {
+			var space = spaces[i];
+			if(space.owner !== null) {
+				players[space.owner].money += space.earn;
+			}
+		}
+		
+	},
+	
+	spaces_with_ware : function(ware, skip_empty) {
+		var spaces = this.game_state.spaces;
+		var ret = [];
+		for(var i = 0; i < spaces.length; i++) {
+			var space = spaces[i];			
+			if(skip_empty && space.owner === null) {
+				continue;
+			}
+
+			if(space.ware === ware) {
+				ret.push(space);
+			}
+		}
+		return ret;
+	},
+	
+	value_of_ware : function(ware) {
+		if(ware === "silk") {
+			return 36;
+		} else {
+			return 18;
+		}
 	}
 	
 }

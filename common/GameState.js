@@ -21,20 +21,20 @@ function GameState(){
 	this.dices = [];
 	this.current_player_id = 0;
 	this.captain_id = 0;
-	this.phase = phases[0];
+	this.phase = 0;
 	this.acted_players = 0; //number of players who has acted in current phase
 	this.init();
 };
 
 GameState.prototype.init = function(){
 	for(var i=0; i<3; i++){
-		this.punts.push(new Punt(i+1));
+		this.punts.push(new Punt(i));
 	}
-	var i=0;
-	nutme_spaces = [new Space(++i, 2, 0), new Space(++i, 3, 0), new Space(++i, 4, 0)]; // for nutme
-	silk_spaces = [new Space(++i, 3, 0), new Space(++i, 4, 0), new Space(++i, 5, 0)]; // for silk
-	ginseng_spaces = [new Space(++i, 1, 0), new Space(++i, 2, 0), new Space(++i, 3, 0)]; // for  ginseng
-	jade_spaces = [new Space(++i, 3, 0), new Space(++i, 4, 0), new Space(++i, 4, 0), new Space(++i, 5, 0)]; // for jade
+	var i=-1;
+	nutme_spaces = [new Space(++i, 2, 0, "nutme"), new Space(++i, 3, 0, "nutme"), new Space(++i, 4, 0, "nutme")]; // for nutme
+	silk_spaces = [new Space(++i, 3, 0, "silk"), new Space(++i, 4, 0, "silk"), new Space(++i, 5, 0, "silk")]; // for silk
+	ginseng_spaces = [new Space(++i, 1, 0, "ginseng"), new Space(++i, 2, 0, "ginseng"), new Space(++i, 3, 0, "ginseng")]; // for  ginseng
+	jade_spaces = [new Space(++i, 3, 0, "jade"), new Space(++i, 4, 0, "jade"), new Space(++i, 4, 0, "jade"), new Space(++i, 5, 0, "jade")]; // for jade
 	wharf_spaces = [new Space(++i, 4, 6), new Space(++i, 3, 8), new Space(++i, 2, 15)];
 	shipyard_spaces = [new Space(++i, 4, 6), new Space(++i, 3, 8), new Space(++i, 2, 15)];
 	insurance_spaces = [new Space(++i, -10, 0)];
