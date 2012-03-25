@@ -1,5 +1,5 @@
-function msgReceived(msg) {
-	$clientCounter.html(msg.clients);
+function msgReceived(game_state) {
+	$clientCounter.html(game_state.num_players);
 }
 
 $(document).ready(function() {
@@ -7,8 +7,8 @@ $(document).ready(function() {
 	
 	var socket = io.connect('http://localhost:3000');
 
-	socket.on("news", function(msg) {
-		console.log("message rec" + msg);
-		msgReceived(msg);
+	socket.on("game_state", function(game_state) {
+		console.log(game_state);
+		msgReceived(game_state);
 	});
 });
