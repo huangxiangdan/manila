@@ -96,16 +96,16 @@ var game_engine = {
 	
 	advance_phase : function() {
 		var end_of_placement = function(engine) {
-			engine.game_state.phase += 1;
 			engine.game_state.acted_players = 0;
 			engine.game_state.current_player_id = engine.game_state.captain_id;
-			engine.roll_dice();			
+			engine.roll_dice();
 		}
 		switch(this.game_state.phase) {
 			case 3: {
 				//check phase
 				if(this.game_state.acted_players == this.game_state.players.length) {
 					end_of_placement(this);
+					this.game_state.phase += 1;
 				}
 				break;
 			}
@@ -113,6 +113,7 @@ var game_engine = {
 				//check phase
 				if(this.game_state.acted_players == this.game_state.players.length) {
 					end_of_placement(this);
+					this.game_state.phase += 1;
 				}
 				break;
 			}
@@ -122,11 +123,25 @@ var game_engine = {
 				if(this.game_state.acted_players == this.game_state.players.length) {
 					end_of_placement(this);
 					this.compute_round_result();
+					if(this.end_conditions_met()) {
+						this.game_state.phase = 7; //game over
+					} else {
+						engine.game_state.phase = 3;
+					}
 				}
 				break;
 			}
 		}
 		
+	},
+	
+	end_conditions_met : function() {
+		for(var share_name : this.game_state.share_prices) {
+			if (this.game_state.share_prices[share_name] >= 30) {
+				return true;
+			}
+		}
+		return false;
 	},
 	
 	compute_round_score : function() {

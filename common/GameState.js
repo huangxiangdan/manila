@@ -8,7 +8,8 @@ var phases = [	"auction_phase",
 				"first_choose_spaces_phase",
 				"second_choose_spaces_phase",
 				"third_choose_spaces_phase",
-				"move_ship_phase" //+1, +2
+				"move_ship_phase", //+1, +2
+				"game_over"
 			];
 
 function GameState(){
