@@ -47,27 +47,32 @@ var game_engine = {
 	
 	place_dude : function(action) {
 		//assert it is the current player
-		if(!is_currect_player(action)) {
+		if(!this.is_correct_player(action)) {
 			return false;
 		}
 		//assert it is the correct turn
 		
 		var space = this.game_state.spaces[action.space_id];
-		
+		var player = this.game_state.players[action.player_id];
+				
 		//can't place on owned square
-		console.log("space owner " + space.owner)
 		if(space.owner != null) {
 			return false;
 		}
 		
+		//check that you can afford it
+		if(space.payment > player.money) {
+			return false;
+		}
+		
 		space.owner = action.player_id;
-		var player = this.game_state.players[action.player_id];
+
 		player.money -= space.payment;
 		this.next_player();
 		return true;
 	},
 	
-	is_currect_player : function(action) {
+	is_correct_player : function(action) {
 		return action.player_id === this.game_state.current_player_id
 	},
 	

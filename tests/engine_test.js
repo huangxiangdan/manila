@@ -99,5 +99,34 @@ exports.testSpaces = function(test) {
 	action = {type : "place", player_id: players[1].id, space_id:3}
 	test.ok(!engine.handle_action(action), "can't place on same square");
 	
+	//test guy with no money
+	players[1].money = 2;
+	action = {type : "place", player_id: players[1].id, space_id:13}
+	test.ok(!engine.handle_action(action), "can't place on spaces you cannot afford. money=" + players[1].money + " , cost=" + spaces[13].payment);
+	
+	action = {type : "place", player_id: players[1].id, space_id:15}
+	test.ok(engine.handle_action(action), "can afford this cheap one. money=" + players[1].money + " , cost=" + spaces[15].payment);
+	
 	test.done();
 }
+
+exports.testAdvancePhase = function(test) {
+	//create engine
+	//have everyone place a dude
+	//check that the turn has advanced
+	//check that dice got rolled
+	test.done();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
