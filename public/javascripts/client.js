@@ -15,9 +15,12 @@ function update(game_state) {
 		// console.log(puntId);
 		spaceView.add(space.id, position, puntId);
 	}
-	// game_state.draw();
+	// $("#players").html($.toJSON(game_state.players));
+	// $("#phase").html(game_state.phase);
+	// $("#spaces").html($.toJSON(game_state.spaces));
 	// $num_players.html(game_state.players.length);
-	// $current_player.html(game_state.current_player);
+	// $current_player.html(game_state.current_player_id);
+	// $ships.html($.toJSON(game_state.punts));
 }
 
 function getPuntBySpaceId(spaceId){

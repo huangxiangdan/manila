@@ -1,16 +1,29 @@
 var Punt = require('../models/punt.js');
-var Share = require('../models/share.js');
 var Space = require('../models/space.js');
 var Ware = require('../models/ware.js');
 
+var phases = [	"auction_phase",
+				"buy_stock_phase",
+				"choose_ships_phase",
+				"first_choose_spaces_phase",
+				"second_choose_spaces_phase",
+				"third_choose_spaces_phase",
+				"move_ship_phase", //+1, +2
+				"game_over"
+			];
+
 function GameState(){
 	this.players = [];
-	this.shares = [];
+	this.shares = {};
+	this.share_prices = {};
 	this.spaces = [];
 	this.punts = [];
 	this.wares = [];
 	this.dices = [];
-	this.current_player=1;
+	this.current_player_id = 0;
+	this.captain_id = 0;
+	this.phase = 0;
+	this.acted_players = 0; //number of players who has acted in current phase
 	this.init();
 	this.test();
 };
@@ -20,10 +33,17 @@ GameState.prototype.init = function(){
 		this.punts.push(new Punt(i));
 	}
 	var i=-1;
+<<<<<<< HEAD
 	nutme_spaces = [new Space(++i, 2, 0), new Space(++i, 3, 0), new Space(++i, 4, 0)]; // for nutme
 	silk_spaces = [new Space(++i, 3, 0), new Space(++i, 4, 0), new Space(++i, 5, 0)]; // for silk
 	ginseng_spaces = [new Space(++i, 1, 0), new Space(++i, 2, 0), new Space(++i, 3, 0)]; // for  ginseng
 	jade_spaces = [new Space(++i, 3, 0), new Space(++i, 4, 0), new Space(++i, 4, 0), new Space(++i, 5, 0)]; // for jade
+=======
+	nutme_spaces = [new Space(++i, 2, 0, "nutme"), new Space(++i, 3, 0, "nutme"), new Space(++i, 4, 0, "nutme")]; // for nutme
+	silk_spaces = [new Space(++i, 3, 0, "silk"), new Space(++i, 4, 0, "silk"), new Space(++i, 5, 0, "silk")]; // for silk
+	ginseng_spaces = [new Space(++i, 1, 0, "ginseng"), new Space(++i, 2, 0, "ginseng"), new Space(++i, 3, 0, "ginseng")]; // for  ginseng
+	jade_spaces = [new Space(++i, 3, 0, "jade"), new Space(++i, 4, 0, "jade"), new Space(++i, 4, 0, "jade"), new Space(++i, 5, 0, "jade")]; // for jade
+>>>>>>> 699ee7b0bcc55c1b27e89f0c337025ee0d8b5152
 	wharf_spaces = [new Space(++i, 4, 6), new Space(++i, 3, 8), new Space(++i, 2, 15)];
 	shipyard_spaces = [new Space(++i, 4, 6), new Space(++i, 3, 8), new Space(++i, 2, 15)];
 	insurance_spaces = [new Space(++i, -10, 0)];
@@ -43,14 +63,11 @@ GameState.prototype.init = function(){
 	jade_ware = new Ware(++i, "玉石", 36, jade_spaces);
 	this.wares = [nutme_ware, silk_ware, ginseng_ware, jade_ware];
 
-	var i=0;
-	for(var k=0; k<this.wares.length; k++){
-		for(var j=0; j<5; j++){
-			this.shares.push(new Share(++i, this.wares[k]));		
-		}
-	}
+	this.shares = {"nutme" : 5, "ginseng" : 5, "silk" : 5, "jade" : 5}
+	this.share_prices = {"nutme" : 5, "ginseng" : 5, "silk" : 5, "jade" : 5}
 };
 
+<<<<<<< HEAD
 GameState.prototype.test = function(){
 	for(var i=0; i<this.punts.length; i++){
 		this.punts[i].ware = this.wares[i+1];
@@ -59,4 +76,6 @@ GameState.prototype.test = function(){
 
 
 
+=======
+>>>>>>> 699ee7b0bcc55c1b27e89f0c337025ee0d8b5152
 module.exports = GameState;
