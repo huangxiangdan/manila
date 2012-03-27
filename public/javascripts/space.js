@@ -17,7 +17,7 @@ SpaceBase.prototype._init = function(position){
 	this.offsetY = 5;
 	
 	this.blockImage = $('<canvas width="' + _width + '" height="' + _height + '"></canvas>').appendTo(this.container);
-	$this = this;
+	var $this = this;
 	this.blockImage.click(function(){
 		$this.click();
 	});
@@ -35,7 +35,6 @@ SpaceBase.prototype._init = function(position){
 }
 
 SpaceBase.prototype.click = function(e){
-	console.log(this);
 	fillSpace(this.id);
 }
 
@@ -69,7 +68,7 @@ SpaceView.prototype.add = function(spaceId, position, puntId) {
 	container = puntId>=0 ? $(".punt"+puntId) : $("body");
 	// console.log(container);
 	space = new SpaceBase(spaceId, null, container);
-	console.log(position);
+	// console.log(position);
 	space.setPosition(position);
 	
 	this.spaceMap[spaceId] = space;

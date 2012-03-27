@@ -1,5 +1,6 @@
 var app = require('express').createServer();
 var io = require('socket.io').listen(app);
+require('./common/utils');
 
 var GameEngine = require("./engine");
 require('jade');
@@ -19,13 +20,14 @@ app.get('/', function(req, res) {
 	console.log("rendered index");
 	res.render('index');
 });
-
+GameEngine.start();
 
 io.on("connection", function(client) {
 	console.log("connection");
-	var player_id = GameEngine.add_player();
+	var player_id = GameEngine.add_player(client);
+	game_state = GameEngine.get_gamestate();
 	
-	client.emit("assign_id", {id: player_id});
+	client.emit("assign_id", {id: player_id, game_state:GameEngine.get_gamestate()});
 	io.sockets.emit('game_state', GameEngine.get_gamestate());
 	
 	client.on("disconnect", function() {
@@ -33,6 +35,7 @@ io.on("connection", function(client) {
 	});
 	
 	client.on("action", function(action) {
+		console.log("action:"+action);
 		GameEngine.handle_action(action);
 		io.sockets.emit('game_state', GameEngine.get_gamestate());
 	})

@@ -1,25 +1,11 @@
 function update(game_state) {
 	window.game_state = game_state;
-	var puntView = new PuntView(mapView, imageCache['punt']);
-	for(var i=0; i<game_state.punts.length; i++){
-		var punt = game_state.punts[i];
-		// console.log(punt.id);
-		puntView.add(punt.id, 0);
-	}
-	var spaceView = new SpaceView(null);
-	for(var i=3; i<game_state.spaces.length; i++){
-		var space = game_state.spaces[i];
-		// console.log(space.id);
-		position = {"x":spaceData[space.id][0], "y":spaceData[space.id][1]};
-		var puntId = getPuntBySpaceId(space.id);
-		// console.log(puntId);
-		spaceView.add(space.id, position, puntId);
-	}
-	// $("#players").html($.toJSON(game_state.players));
-	// $("#phase").html(game_state.phase);
-	// $("#spaces").html($.toJSON(game_state.spaces));
-	// $num_players.html(game_state.players.length);
-	// $current_player.html(game_state.current_player_id);
+	
+	$("#players").html($.toJSON(game_state.players));
+	$("#phase").html(game_state.phase);
+	$("#spaces").html($.toJSON(game_state.spaces));
+	$num_players.html(game_state.players.length);
+	$current_player.html(game_state.current_player_id);
 	// $ships.html($.toJSON(game_state.punts));
 }
 
@@ -36,15 +22,16 @@ function getPuntBySpaceId(spaceId){
 	}
 	for(var i=0; i<game_state.punts.length; i++){
 		// console.log(game_state.punts[i].ware.id);
-		if(game_state.punts[i].ware.id == wareId){
+		if(game_state.punts[i].ware && game_state.punts[i].ware.id == wareId){
 			return game_state.punts[i].id;
 		}
 	}
-	console.log(spaceId);
+	// console.log(spaceId);
 	return -1;
 }
 
 imageCache=loadImage(IMAGE_LIST, init);
+var game_state;
 
 function init(){
 	// engine = new Game();
@@ -54,6 +41,9 @@ function init(){
 	mapView = new MapView(mapData,1000,1500,SCALE,240,0,imageCache['map'],imageCache['bg']);
 	mapView.draw();	
 
+	if(game_state){
+		draw_game_state(game_state);
+	}
 	$(window).bind("click,dblclick", function(evt) {
 		evt.preventDefault();
 	});
@@ -61,9 +51,27 @@ function init(){
 	bindSocket();
 }
 
+function draw_game_state(game_state){
+	window.puntView = new PuntView(mapView, imageCache['punt']);
+	window.spaceView = new SpaceView(null);
+	for(var i=0; i<game_state.punts.length; i++){
+		var punt = game_state.punts[i];
+		// console.log(punt.id);
+		puntView.add(punt.id, 0);
+	}
+	for(var i=3; i<game_state.spaces.length; i++){
+		var space = game_state.spaces[i];
+		// console.log(space.id);
+		position = {"x":spaceData[space.id][0], "y":spaceData[space.id][1]};
+		var puntId = getPuntBySpaceId(space.id);
+		// console.log(puntId);
+		spaceView.add(space.id, position, puntId);
+	}
+}
+
 function fillSpace(spaceId){
-	alert(spaceId);
 	socket.emit("action", {type : "place", player_id: my_id, space_id:spaceId});
+	console.log(spaceId);
 }
 
 function bindSocket(){
@@ -81,6 +89,10 @@ function bindSocket(){
 	socket.on("assign_id", function(data) {
 		// console.log(data);
 		my_id = data.id;
+		window.game_state = data.game_state;
+		if(game_state){
+			draw_game_state(game_state);
+		}
 		$my_id.html(data.id);
 	});
 	

@@ -25,7 +25,6 @@ function GameState(){
 	this.phase = 0;
 	this.acted_players = 0; //number of players who has acted in current phase
 	this.init();
-	this.test();
 };
 
 GameState.prototype.init = function(){
@@ -59,11 +58,5 @@ GameState.prototype.init = function(){
 	this.shares = {"nutme" : 5, "ginseng" : 5, "silk" : 5, "jade" : 5}
 	this.share_prices = {"nutme" : 5, "ginseng" : 5, "silk" : 5, "jade" : 5}
 };
-
-GameState.prototype.test = function(){
-	for(var i=0; i<this.punts.length; i++){
-		this.punts[i].ware = this.wares[i+1];
-	}
-}
 
 module.exports = GameState;

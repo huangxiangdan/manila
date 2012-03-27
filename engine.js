@@ -3,17 +3,32 @@ var Player = require('./models/player.js');
 //the game engine
 var game_engine = {
 	game_state : new GameState(),
+	
+	start : function(){
+		for(var i=0; i<this.game_state.punts.length; i++){
+			this.game_state.punts[i].ware = this.game_state.wares[i+1];
+		}
+	},
 
-	add_player : function() {
+	add_player : function(client) {
 		var player_id = this.game_state.players.length;
-		this.game_state.players.push(new Player(player_id, "test"));
+		console.log("clientId:"+client.id);
+		this.game_state.players.push(new Player(player_id, client.id, "test"));
+		console.log("clientId2:"+this.game_state.players[0].clientId);
 		// this.num_players += 1;
 		return player_id;
 	},
 
 	remove_player : function(client) {
 		console.log("removing " + client);
-		this.num_players -=1;
+		var selected;
+		for(var i=0; i< this.game_state.players.length; i++){
+			var player = this.game_state.players[i];
+			if(player.clientId == client.id){
+				selected = player;
+			}
+		}
+		this.game_state.players.remove(selected);
 	},
 
 	next_player : function() {

@@ -1,7 +1,8 @@
-function Player(id, name){
+function Player(id, clientId, name){
 	this.id = id;
 	this.name = name;
-
+	
+	this.clientId = clientId;
 	this.tokens = [];
 	this.shares = {"nutme" : 0, "ginseng" : 0, "silk" : 0, "jade" : 0};
 	

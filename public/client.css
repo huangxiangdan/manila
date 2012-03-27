@@ -2,6 +2,12 @@ body{
 	margin:0px;
 }
 
+#heading{
+	position:absolute;
+	left:1000px;
+	z-index:1000;
+}
+
 #map{
 	margin:0 auto;
 	position:relative;

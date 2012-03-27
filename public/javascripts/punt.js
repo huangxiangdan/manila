@@ -81,6 +81,11 @@ PuntView.prototype.add = function(puntId, position) {
 	this.puntMap[puntId] = punt;
 };
 
+PuntView.prototype.removeAll = function() {
+	this.puntMap = {};
+	$('.punt-viewer').remove();
+};
+
 // /**
 //  ** 移除一个block
 //  **/
