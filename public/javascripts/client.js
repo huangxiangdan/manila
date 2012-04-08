@@ -4,9 +4,19 @@ function update(game_state) {
 	$("#players").html($.toJSON(game_state.players));
 	$("#phase").html(game_state.phase);
 	$("#spaces").html($.toJSON(game_state.spaces));
+	$("#punts").html($.toJSON(game_state.punts));
 	$num_players.html(game_state.players.length);
 	$current_player.html(game_state.current_player_id);
+	movePunts();
 	// $ships.html($.toJSON(game_state.punts));
+}
+
+function movePunts(){
+	for(var i=0; i<game_state.punts.length; i++){
+		// console.log(game_state.punts[i].ware.id);
+		var punt = game_state.punts[i];
+		puntView.moveTo(punt.id, punt.position);
+	}
 }
 
 function getPuntBySpaceId(spaceId){
@@ -57,7 +67,8 @@ function draw_game_state(game_state){
 	for(var i=0; i<game_state.punts.length; i++){
 		var punt = game_state.punts[i];
 		// console.log(punt.id);
-		puntView.add(punt.id, 0);
+		puntView.add(punt.id, punt.position);
+		puntView.loadWare(punt.id, punt.ware.id);
 	}
 	for(var i=3; i<game_state.spaces.length; i++){
 		var space = game_state.spaces[i];

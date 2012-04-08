@@ -37,6 +37,9 @@ var IMAGE_LIST=[
 	{
 		id : "punt",
 		url : "images/punt.png"
+	}, {
+		id : "wares",
+		url : "images/chuan1.png"
 	}
 ];
 //存放已载入的图片

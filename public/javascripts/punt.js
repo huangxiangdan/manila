@@ -42,6 +42,12 @@ PuntBase.prototype._init = function(position){
 	this.context.drawImage(this.image, 0, 0, _width, _height);	
 }
 
+PuntBase.prototype.loadWare = function(wareId){
+	var _width = 116 * this.scale;
+	var _height = 245 * this.scale;
+	this.context.drawImage(imageCache["wares"], 0, 0, _width, _height);	
+}
+
 /**
  ** 设置用户头像位置
  **/
@@ -80,6 +86,18 @@ PuntView.prototype.add = function(puntId, position) {
 	
 	this.puntMap[puntId] = punt;
 };
+
+PuntView.prototype.loadWare = function(puntId, wareId){
+	this.puntMap[puntId].loadWare(wareId);
+}
+
+PuntView.prototype.moveTo = function(puntId, position){
+	if(position >=0 && position < mapData.length){
+		position = this.mapView.getMapByIndex(puntId, position);
+		punt = this.puntMap[puntId];
+		punt.setPosition(position);
+	}
+}
 
 PuntView.prototype.removeAll = function() {
 	this.puntMap = {};
