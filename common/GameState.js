@@ -49,10 +49,10 @@ GameState.prototype.init = function(){
 	this.spaces = this.spaces.concat(insurance_spaces);
 
 	var i=-1;
-	nutme_ware = new Ware(++i, "肉豆蔻", 24, nutme_spaces);
-	silk_ware = new Ware(++i, "丝绸", 30, silk_spaces);
-	ginseng_ware = new Ware(++i, "人参", 18, ginseng_spaces);
-	jade_ware = new Ware(++i, "玉石", 36, jade_spaces);
+	nutme_ware = new Ware(++i, "nutme", "肉豆蔻", 24, nutme_spaces);
+	silk_ware = new Ware(++i, "silk", "丝绸", 30, silk_spaces);
+	ginseng_ware = new Ware(++i, "ginseng", "人参", 18, ginseng_spaces);
+	jade_ware = new Ware(++i, "jade", "玉石", 36, jade_spaces);
 	this.wares = [nutme_ware, silk_ware, ginseng_ware, jade_ware];
 
 	this.shares = {"nutme" : 5, "ginseng" : 5, "silk" : 5, "jade" : 5}

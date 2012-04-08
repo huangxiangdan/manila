@@ -22,10 +22,23 @@ canvas{
 	left: 0px;
 }
 
-
 .punt-viewer {
 	position:absolute;
 	left:0;
 	top:0;
 	z-index: 300;
+}
+
+.success {
+  -webkit-transform: rotate(10deg) scale(0.5);
+  -moz-transform: rotate(10deg) scale(0.5);
+  -o-transform: rotate(10deg) scale(0.5);
+  transform: rotate(10deg) scale(0.5);
+}
+
+.fail {
+  -webkit-transform: rotate(25deg) scale(0.5);
+  -moz-transform: rotate(25deg) scale(0.5);
+  -o-transform: rotate(25deg) scale(0.5);
+  transform: rotate(25deg) scale(0.5);
 }
