@@ -44,6 +44,30 @@ var game_engine = {
 		return this.game_state;
 	},
 	
+	get_punt_count:function(state){
+	  var count = 0;
+	  for (var i = 0; i < this.game_state.punts.length; i++) {
+	    var punt = this.game_state.punts[i];
+	    if(punt.state == state){
+	      count++;
+	    }
+	  }
+	  return count;
+	},
+	
+	place_fail_punt:function(){
+	  var count = 0;
+	  for (var i = 0; i < this.game_state.punts.length; i++) {
+	    var punt = this.game_state.punts[i];
+	    console.log("punt state:"+punt.state);
+	    if(punt.state == 1){
+	      punt.state = 3;
+			  punt.order = count;
+			  count++;
+	    }
+	  }
+	},
+	
 	handle_action : function(action) {
 		//perform action
 		if(action.type === "dice") {
@@ -129,6 +153,10 @@ var game_engine = {
 		for (var i = 0; i < this.game_state.punts.length; i++) {
 			var punt = this.game_state.punts[i];
 			punt.position += (1 + Math.floor(Math.random() * 6));
+			if(punt.position > 13 && punt.state == 1){
+			  punt.order = this.get_punt_count(2);
+  			punt.state = 2;
+			}
 		}
 	},
 	
@@ -209,6 +237,7 @@ var game_engine = {
 				//check phase
 				if(this.game_state.acted_players == this.game_state.players.length) {
 					end_of_placement(this);
+    			this.place_fail_punt();
 					this.compute_round_score();
 					if(this.end_conditions_met()) {
 						this.game_state.phase = 7; //game over

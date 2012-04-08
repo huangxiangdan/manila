@@ -219,16 +219,19 @@ exports.testAdvancePhase = function(test) {
 	engine.add_player(client1);
 	engine.add_player(client2);
 	engine.add_player(client3);
-	engine.get_gamestate().phase = 3;
+	engine.get_gamestate().phase = 5;
 	
 	//have everyone place a dude
 	var players = engine.get_gamestate().players;
 	test.ok(engine.handle_action({type : "place", player_id: players[0].id, space_id:3}), "place 1");
-	test.equal(3, engine.get_gamestate().phase);
+	test.equal(5, engine.get_gamestate().phase);
 	test.ok(engine.handle_action({type : "place", player_id: players[1].id, space_id:4}), "place 2");
-	test.equal(3, engine.get_gamestate().phase);
+	test.equal(5, engine.get_gamestate().phase);
 	test.ok(engine.handle_action({type : "place", player_id: players[2].id, space_id:5}), "place 3");
-	test.equal(4, engine.get_gamestate().phase, "advance to next phase");
+	test.equal(3, engine.get_gamestate().phase, "advance to next phase");
+	
+	test.equal(0, engine.get_punt_count(1), "place punt");
+	test.equal(3, engine.get_punt_count(2)+engine.get_punt_count(3), "place punt");
 	
 	//check that the turn has advanced
 	//check that dice got rolled

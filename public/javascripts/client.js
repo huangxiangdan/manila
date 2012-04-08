@@ -8,6 +8,7 @@ function update(game_state) {
 	$num_players.html(game_state.players.length);
 	$current_player.html(game_state.current_player_id);
 	movePunts();
+	
 	// $ships.html($.toJSON(game_state.punts));
 }
 
@@ -15,7 +16,12 @@ function movePunts(){
 	for(var i=0; i<game_state.punts.length; i++){
 		// console.log(game_state.punts[i].ware.id);
 		var punt = game_state.punts[i];
-		puntView.moveTo(punt.id, punt.position);
+		if(punt.state != 1){
+		  console.log("punt_id:"+punt.id);
+		  puntView.place(punt.id, punt.state, punt.order);
+		}else{
+		  puntView.moveTo(punt.id, punt.position);
+		}
 	}
 }
 
@@ -68,7 +74,7 @@ function draw_game_state(game_state){
 		var punt = game_state.punts[i];
 		// console.log(punt.id);
 		puntView.add(punt.id, punt.position);
-		puntView.loadWare(punt.id, punt.ware.id);
+		puntView.loadWare(punt.id, punt.ware);
 	}
 	for(var i=3; i<game_state.spaces.length; i++){
 		var space = game_state.spaces[i];

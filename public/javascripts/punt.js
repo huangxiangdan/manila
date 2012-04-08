@@ -42,10 +42,30 @@ PuntBase.prototype._init = function(position){
 	this.context.drawImage(this.image, 0, 0, _width, _height);	
 }
 
-PuntBase.prototype.loadWare = function(wareId){
-	var _width = 116 * this.scale;
-	var _height = 245 * this.scale;
-	this.context.drawImage(imageCache["wares"], 0, 0, _width, _height);	
+PuntBase.prototype.loadWare = function(ware){
+	var _width = 69 * this.scale;
+	var _height = 232 * this.scale;
+	this.context.drawImage(imageCache[ware.name], 20, 0, _width, _height);	
+}
+
+PuntBase.prototype.place = function(state, order){
+  if(state == 2){
+    this.setPositionWithoutOffset(wharfData[order][0], wharfData[order][1]);
+  	$(this.blockImage).addClass('success');
+  }else if(state == 3){
+    this.setPositionWithoutOffset(shipyardData[order][0], shipyardData[order][1]);
+  	$(this.blockImage).addClass('fail');
+  }
+}
+
+PuntBase.prototype.setPositionWithoutOffset = function(x, y){
+	this.blockImage.css({
+		visibility: "visible",
+		position:"absolute",
+		opacity:1,
+		left: x  + "px",
+		top : y  + "px"
+	});
 }
 
 /**
@@ -80,9 +100,11 @@ PuntView.prototype.add = function(puntId, position) {
 
 	punt = new PuntBase(puntId, this.image, this.container);
 	
-	position = this.mapView.getMapByIndex(puntId, position);
 	// console.log(position);
-	punt.setPosition(position);
+  if(position >=0 && position < mapData.length){
+    position = this.mapView.getMapByIndex(puntId, position);
+    punt.setPosition(position);
+  }
 	
 	this.puntMap[puntId] = punt;
 };
@@ -91,11 +113,17 @@ PuntView.prototype.loadWare = function(puntId, wareId){
 	this.puntMap[puntId].loadWare(wareId);
 }
 
+PuntView.prototype.place = function(puntId, state, order){
+	this.puntMap[puntId].place(state, order);
+}
+
 PuntView.prototype.moveTo = function(puntId, position){
 	if(position >=0 && position < mapData.length){
 		position = this.mapView.getMapByIndex(puntId, position);
 		punt = this.puntMap[puntId];
 		punt.setPosition(position);
+	}else{
+	  $(punt.blockImage).hide();
 	}
 }
 
