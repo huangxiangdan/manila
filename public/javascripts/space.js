@@ -35,6 +35,8 @@ SpaceBase.prototype._init = function(position){
 }
 
 SpaceBase.prototype.click = function(e){
+	var context = this.blockImage[0].getContext("2d");
+	context.fillRect(0,0, 20, 20);
 	fillSpace(this.id);
 }
 
@@ -42,6 +44,9 @@ SpaceBase.prototype.click = function(e){
  ** 设置用户头像位置
  **/
 SpaceBase.prototype.setPosition = function(position){
+	this.dx = position.x;
+	this.dy = position.y;
+	
 	this.blockImage.css({
 		visibility: "visible",
 		position:"absolute",
@@ -65,7 +70,7 @@ function SpaceView(image){
 SpaceView.prototype.add = function(spaceId, position, puntId) {
 	// console.log(puntId);
 	var space;
-	container = puntId>=0 ? $(".punt"+puntId) : $("body");
+	var container = puntId>=0 ? $(".punt"+puntId) : $("body");
 	// console.log(container);
 	space = new SpaceBase(spaceId, null, container);
 	// console.log(position);

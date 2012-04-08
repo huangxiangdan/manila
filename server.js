@@ -35,7 +35,6 @@ io.on("connection", function(client) {
 	});
 	
 	client.on("action", function(action) {
-		console.log("action:"+action);
 		GameEngine.handle_action(action);
 		io.sockets.emit('game_state', GameEngine.get_gamestate());
 	})

@@ -75,7 +75,7 @@ MapView.prototype.cleanByColorByIndex=function(index){
 	this.mapElementArray[i][j].cleanByColor();
 };
 
-MapView.prototype.getMapByIndex=function(index, position){	
+MapView.prototype.getMapByIndex=function(index, position){
 	var x= this.mapElementArray[this.heightNum - position - 1][index].dx;	
 	var y= this.mapElementArray[this.heightNum - position - 1 ][index].dy;	
 	return {'x':x,'y':y};

@@ -8,6 +8,7 @@ var game_engine = {
 		for(var i=0; i<this.game_state.punts.length; i++){
 			this.game_state.punts[i].ware = this.game_state.wares[i+1];
 		}
+		this.game_state.phase = 3;
 	},
 
 	add_player : function(client) {
@@ -65,7 +66,9 @@ var game_engine = {
 	
 	place_dude : function(action) {
 		//assert it is the current player
+		console.log("place");
 		if(!this.is_correct_player(action)) {
+		  console.log("not is_correct_player");
 			return false;
 		}
 		//assert it is the correct turn
@@ -75,11 +78,13 @@ var game_engine = {
 				
 		//can't place on owned square
 		if(space.owner != null) {
+		  console.log("has owner");
 			return false;
 		}
 		
 		//check that you can afford it
 		if(space.payment > player.money) {
+		  console.log("invalid money");
 			return false;
 		}
 		
@@ -88,7 +93,6 @@ var game_engine = {
 		player.money -= space.payment;
 		this.next_player();
 		this.advance_phase();
-	
 		return true;
 	},
 	
@@ -137,11 +141,11 @@ var game_engine = {
 				//check phase
 				if(this.game_state.acted_players == this.game_state.players.length) {
 					end_of_placement(this);
-					this.compute_round_result();
+					this.compute_round_score();
 					if(this.end_conditions_met()) {
 						this.game_state.phase = 7; //game over
 					} else {
-						engine.game_state.phase = 3;
+						this.game_state.phase = 3;
 					}
 				}
 				break;

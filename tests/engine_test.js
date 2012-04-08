@@ -2,9 +2,10 @@ exports.testAddPlayers = function(test){
 	var engine = require("../engine").init();
 	var state = engine.get_gamestate();
 	test.equal(state.players.length, 0, "the game should start with 0 players");
-	
-	engine.add_player();
-	engine.add_player();
+	var client1 = {id:1};
+	var client2 = {id:2};
+	engine.add_player(client1);
+	engine.add_player(client2);
 	state = engine.get_gamestate();
     test.equal(state.players.length, 2, "the game should have 2 players");
 	
@@ -45,8 +46,10 @@ exports.chooseWare = function(test) {
 
 exports.testDice = function(test){
 	var engine = require("../engine").init();
-	engine.add_player();
-	engine.add_player();
+	var client1 = {id:1};
+	var client2 = {id:2};
+	engine.add_player(client1);
+	engine.add_player(client2);
 	var state = engine.get_gamestate();
     test.equal(state.players.length, 2, "the game should have 2 players");
 	
@@ -67,9 +70,12 @@ exports.testDice = function(test){
 exports.testPlayers = function(test) {
 	//create the engine
 	var engine = require("../engine").init();
-	engine.add_player();
-	engine.add_player();
-	engine.add_player();
+	var client1 = {id:1};
+	var client2 = {id:2};
+	var client3 = {id:3};
+	engine.add_player(client1);
+	engine.add_player(client2);
+	engine.add_player(client3);
 	
 	var players = engine.get_gamestate().players;
 	test.equal(3, players.length, "there should be 3 players")
@@ -86,9 +92,12 @@ exports.testPlayers = function(test) {
 exports.testSpaces = function(test) {
 	//create the engine
 	var engine = require("../engine").init();
-	engine.add_player();
-	engine.add_player();
-	engine.add_player();
+	var client1 = {id:1};
+	var client2 = {id:2};
+	var client3 = {id:3};
+	engine.add_player(client1);
+	engine.add_player(client2);
+	engine.add_player(client3);
 	
 	//test initial spaces
 	var spaces = engine.get_gamestate().spaces;
@@ -105,7 +114,6 @@ exports.testSpaces = function(test) {
 	var result = engine.handle_action(action);
 	
 	test.ok(result, "first placement should succeed");
-	
 	spaces = engine.get_gamestate().spaces;
 	players = engine.get_gamestate().players;
 	
@@ -133,9 +141,12 @@ exports.testSpaces = function(test) {
 exports.testAdvancePhase = function(test) {
 	//create engine
 	var engine = require("../engine").init();
-	engine.add_player();
-	engine.add_player();
-	engine.add_player();
+	var client1 = {id:1};
+	var client2 = {id:2};
+	var client3 = {id:3};
+	engine.add_player(client1);
+	engine.add_player(client2);
+	engine.add_player(client3);
 	engine.get_gamestate().phase = 3;
 	
 	//have everyone place a dude
@@ -156,9 +167,12 @@ exports.testAdvancePhase = function(test) {
 exports.computeRoundResult = function(test) {
 	//create engine
 	var engine = require("../engine").init();
-	engine.add_player();
-	engine.add_player();
-	engine.add_player();
+	var client1 = {id:1};
+	var client2 = {id:2};
+	var client3 = {id:3};
+	engine.add_player(client1);
+	engine.add_player(client2);
+	engine.add_player(client3);
 	var players = engine.get_gamestate().players;
 	
 	//give players some shares
