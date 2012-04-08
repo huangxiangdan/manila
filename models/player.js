@@ -5,7 +5,7 @@ function Player(id, clientId, name){
 	this.clientId = clientId;
 	this.tokens = [];
 	this.shares = {"nutme" : 0, "ginseng" : 0, "silk" : 0, "jade" : 0};
-	
+	this.auction_state = true;
 	this.money = 30;
 	this.roleId = 0; //0 for normal, 1 for harbor maste, 2 for bank
 };

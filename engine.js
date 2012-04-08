@@ -53,8 +53,76 @@ var game_engine = {
 			return this.place_dude(action);
 		} else if (action.type === "choose_ware") {
 			return this.choose_ware(action);
+		} else if (action.type === "auction") {
+			return this.auction(this.add_price);
+		} else if (action.type === "auction_drop") {
+			return this.auction_drop();
 		}
 		return false;
+	},
+	
+	auction : function(add_price) {
+		add_price = 1;
+		if (add_price < 1) {
+			return false;
+		}
+		
+		this.game_state.auction_price += add_price;	// add_price是在当前竞价上增加的值
+
+		this.game_state.anyone_auction = true;
+		var player_id = this.game_state.current_player_id;
+		this.game_state.last_captain = player_id;
+		this.auction_init();
+		this.auction_result();
+		this.next_player();
+		return true;
+	},
+	
+	auction_drop : function() {
+		var player = this.game_state.players[this.game_state.current_player_id];
+		player.auction_state = false;	// 将当前player的竞选状态置为false，使之不能参加下次竞选
+		this.game_state.auction_count -= 1;	// 竞价人数减1
+		this.auction_result();
+		this.next_player();
+		return true;
+	},
+	
+	auction_init : function() {
+		if(this.game_state.last_captain == null) {
+			this.game_state.last_captain = this.game_state.players[0].id;	
+		}
+		this.game_state.auction_count = this.game_state.players.length;	// 竞价人数初始化为当前玩家的总数
+
+		for (var i = 0; i < this.game_state.players.length; i++) {
+			var player = this.game_state.players[i];
+			var share_count = player.shares["nutme"] + player.shares["ginseng"] + player.shares["silk"] + player.shares["jade"];
+			 // || player.connect_statue == false 
+			if ( (player.money + share_count*12) <= this.game_state.auction_price
+					|| player.auction_state == false ) {
+				player.auction_statue = false;
+				this.game_state.auction_count -= 1;
+			}
+			else {
+				player.auction_state = true;
+			}
+		}
+	},
+	
+	auction_result : function() {
+		console.log("last_captain:"+this.game_state.last_captain);
+		if (this.game_state.auction_count == 1
+			&& this.game_state.anyone_auction) {
+			this.game_state.players[this.game_state.last_captain].roleId = 1;
+
+			return true;
+		}
+		else if (this.game_state.auction_count == 0) {
+			this.game_state.players[this.game_state.last_captain].roleId = 1;
+			return true;
+		}
+		else {
+			return false;
+		}
 	},
 	
 	roll_dice : function() {
@@ -180,10 +248,8 @@ var game_engine = {
 				for(var j = 0; j < spaces.length; j++) {
 					var space = spaces[j];
 					players[space.owner].money += loot;
-				}
-				
+				}		
 			}
-			
 		}
 		
 		//now assign the rest of spaces
@@ -218,7 +284,7 @@ var game_engine = {
 		} else {
 			return 18;
 		}
-	}
+	},
 	
 }
 

@@ -24,6 +24,10 @@ function GameState(){
 	this.captain_id = 0;
 	this.phase = 0;
 	this.acted_players = 0; //number of players who has acted in current phase
+	this.auction_price = 0;
+	this.anyone_auction = false;
+	this.last_captain = null;
+	this.auction_count = 3;
 	this.init();
 };
 

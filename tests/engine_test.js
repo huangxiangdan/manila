@@ -1,3 +1,75 @@
+exports.testCaptainAuction = function(test) {
+	var engine = require("../engine").init();
+	var state = engine.get_gamestate();
+	test.equal(engine.get_gamestate().auction_price, 0, "the auction should start with auction price 0");
+	var client1 = {id:1};
+	var client2 = {id:2};
+	var client3 = {id:3};
+	var client4 = {id:4};
+	engine.add_player(client1);
+	engine.add_player(client1);
+	engine.add_player(client1);
+	engine.add_player(client1);
+	state = engine.get_gamestate();
+	test.equal(state.players.length, 4, "the game shoule have 4 players");
+	test.equal(0, state.current_player_id, "the first player goes first." + state.current_player);
+	
+	engine.auction_init();
+	state.players[0].money = 40;
+	state.players[1].money = 40;
+	state.players[2].money = 40;
+	state.players[3].money = 40;
+				
+	action = {type : "auction_drop", player_id: 0}
+	engine.handle_action(action)
+	action = {type : "auction_drop", player_id: 1}
+	engine.handle_action(action)
+	action = {type : "auction", player_id: 2}
+	engine.handle_action(action)
+	action = {type : "auction_drop", player_id: 3}
+	engine.handle_action(action)
+
+	engine.auction_result();
+	
+	test.equal(1, state.players[2].roleId, "player 3 should be caption");
+
+	test.done();
+}
+
+exports.testCaptainAuctionDrop = function(test) {
+	var engine = require("../engine").init();
+	var state = engine.get_gamestate();
+	test.equal(engine.get_gamestate().auction_price, 0, "the auction should start with auction price 0");
+	var client1 = {id:1};
+	var client2 = {id:2};
+	var client3 = {id:3};
+	var client4 = {id:4};
+	engine.add_player(client1);
+	engine.add_player(client1);
+	engine.add_player(client1);
+	engine.add_player(client1);
+	state = engine.get_gamestate();
+	test.equal(state.players.length, 4, "the game shoule have 4 players");
+	test.equal(0, state.current_player_id, "the first player goes first." + state.current_player);
+	
+	engine.auction_init();
+	
+	action = {type : "auction_drop", player_id: 0}
+	engine.handle_action(action)
+	action = {type : "auction_drop", player_id: 1}
+	engine.handle_action(action)
+	action = {type : "auction_drop", player_id: 2}
+	engine.handle_action(action)
+	action = {type : "auction_drop", player_id: 3}
+	engine.handle_action(action)
+
+	engine.auction_result();
+	
+	test.equal(1, state.players[0].roleId, "player 1 should be caption");
+	
+	test.done();
+}
+
 exports.testAddPlayers = function(test){
 	var engine = require("../engine").init();
 	var state = engine.get_gamestate();
