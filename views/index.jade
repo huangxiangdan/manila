@@ -1,34 +1,56 @@
 !!! 5
 html(lang="en")
-	head
-		title Manila
-		link(rel="stylesheet", type="text/css", href="/client.css")
-		script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js")
-		script(type="text/javascript", src="http://jquery-json.googlecode.com/files/jquery.json-2.3.min.js")
-		script(type="text/javascript", src="http://localhost:3000/socket.io/socket.io.js")
-		script(type="text/javascript", src="/javascripts/export.js")
-		script(type="text/javascript", src="/common/GameState.js")
-		script(type="text/javascript", src="/javascripts/config.js")
-		script(type="text/javascript", src="/javascripts/base.js")
-		script(type="text/javascript", src="/javascripts/punt.js")
-		script(type="text/javascript", src="/javascripts/space.js")
-		script(type="text/javascript", src="/javascripts/MapElement.js")
-		script(type="text/javascript", src="/javascripts/MapView.js")
-		script(type="text/javascript", src="/javascripts/client.js")
-	body
-	#heading
-		h1 Manila
-		#h2 Phase
-		#phase
-		#h2 My Id:
-		#my_id 0
-		#h2 Num Players:
-		#num_players 0
-		#h2 Current Player:
-		#current_player 0
-		
-		#players
-		#ships
-		#spaces
-		#punts
-		#actions
+  head
+    title Manila
+    link(rel="stylesheet", type="text/css", href="/bootstrap.css")
+    link(rel="stylesheet", type="text/css", href="/client.css")
+    script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js")
+    script(type="text/javascript", src="http://jquery-json.googlecode.com/files/jquery.json-2.3.min.js")
+    script(type="text/javascript", src="http://localhost:3000/socket.io/socket.io.js")
+    script(type="text/javascript", src="/javascripts/export.js")
+    script(type="text/javascript", src="/common/GameState.js")
+    script(type="text/javascript", src="/javascripts/config.js")
+    script(type="text/javascript", src="/javascripts/base.js")
+    script(type="text/javascript", src="/javascripts/punt.js")
+    script(type="text/javascript", src="/javascripts/space.js")
+    script(type="text/javascript", src="/javascripts/MapElement.js")
+    script(type="text/javascript", src="/javascripts/MapView.js")
+    script(type="text/javascript", src="/javascripts/client.js")
+  body
+    #heading
+      h1 Manila
+      //- #h2 Phase
+      //- #phase
+      //- #h2 My Id:
+      //- #my_id 0
+      //- #h2 Num Players:
+      //- #num_players 0
+      //- #h2 Current Player:
+      //- #current_player 0
+      //-     
+      //- #players
+      //- #ships
+      //- #spaces
+      //- #punts
+      //- #actions
+      #player
+      #current_player
+      #role
+      #captain
+      #auction_price
+    #control_panel.navbar.navbar-fixed-bottom
+      .navbar-inner
+        .container
+          #action_panel
+            h2 请出价竞选船长
+            input#auction_money
+            a#auction.btn.btn-info 出价
+            a#auction_drop.btn.btn-warning 放弃
+script(type='text/javascript')
+  $('#action_panel #auction').click(function(){
+    auction($('#auction_money').val());
+  });
+  
+  $('#action_panel #auction_drop').click(function(){
+    auction_drop();
+  });

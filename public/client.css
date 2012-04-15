@@ -2,6 +2,10 @@ body{
 	margin:0px;
 }
 
+.navbar .btn, .navbar .btn-group {
+  margin-top: 0px;
+}
+
 #heading{
 	position:absolute;
 	left:1000px;
@@ -10,10 +14,23 @@ body{
 
 #map{
 	margin:0 auto;
-	position:relative;
+/*  position:relative;*/
+	padding-bottom:150px;
 /*	width:1000px;
 	height:1500px;*/
 /*	background:url("images/map_bg.jpg");*/
+}
+
+#control_panel > .navbar-inner{
+  opacity:0.9;
+}
+
+#control_panel > .navbar-inner > .container{
+  height:150px;
+}
+
+#control_panel #action_panel{
+  float:right;
 }
 
 canvas{

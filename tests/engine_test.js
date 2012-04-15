@@ -14,7 +14,8 @@ exports.testCaptainAuction = function(test) {
 	test.equal(state.players.length, 4, "the game shoule have 4 players");
 	test.equal(0, state.current_player_id, "the first player goes first." + state.current_player);
 	
-	engine.auction_init();
+	engine.start_auction();
+	
 	state.players[0].money = 40;
 	state.players[1].money = 40;
 	state.players[2].money = 40;
@@ -24,14 +25,23 @@ exports.testCaptainAuction = function(test) {
 	engine.handle_action(action)
 	action = {type : "auction_drop", player_id: 1}
 	engine.handle_action(action)
-	action = {type : "auction", player_id: 2}
+	action = {type : "auction", player_id: 2, add_price: 2}
 	engine.handle_action(action)
-	action = {type : "auction_drop", player_id: 3}
+	action = {type : "auction", player_id: 3, add_price: 2}
 	engine.handle_action(action)
-
-	engine.auction_result();
+  // console.log(state.current_player_id);
+	test.equal(2, state.current_player_id, "player 3 should be current_player_id");
 	
-	test.equal(1, state.players[2].roleId, "player 3 should be caption");
+  action = {type : "auction", player_id: 2, add_price: 2}
+  engine.handle_action(action)
+  action = {type : "auction_drop", player_id: 3}
+  engine.handle_action(action)
+  
+  engine.auction_result();
+  
+  test.equal(1, state.players[2].roleId, "player 3 should be caption");
+  test.equal(2, state.last_captain, "last_captain should be player 3");
+  test.equal(6, state.auction_price, "auction_price should be 6");
 
 	test.done();
 }
@@ -52,7 +62,7 @@ exports.testCaptainAuctionDrop = function(test) {
 	test.equal(state.players.length, 4, "the game shoule have 4 players");
 	test.equal(0, state.current_player_id, "the first player goes first." + state.current_player);
 	
-	engine.auction_init();
+	engine.start_auction();
 	
 	action = {type : "auction_drop", player_id: 0}
 	engine.handle_action(action)
@@ -171,6 +181,7 @@ exports.testSpaces = function(test) {
 	engine.add_player(client2);
 	engine.add_player(client3);
 	
+	engine.get_gamestate().phase = 3;
 	//test initial spaces
 	var spaces = engine.get_gamestate().spaces;
 	var players = engine.get_gamestate().players;

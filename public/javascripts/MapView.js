@@ -18,6 +18,7 @@ function MapView(mapDataArray,width,height,scale,offsetX,offsetY,image,bgImage){
 
 	// 创建canvas，并初始化 （也可以直接以标签形式写在页面中，然后通过id等方式取得canvas）
 	this.canvas=document.createElement("canvas");
+	this.canvas.id = "map";
 	this.canvas.width=this.width;
 	this.canvas.height=this.height;
 	document.body.appendChild(this.canvas);
