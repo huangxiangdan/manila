@@ -20,7 +20,6 @@ app.get('/', function(req, res) {
 	console.log("rendered index");
 	res.render('index');
 });
-GameEngine.start();
 
 io.on("connection", function(client) {
 	console.log("connection");
@@ -28,10 +27,17 @@ io.on("connection", function(client) {
 	game_state = GameEngine.get_gamestate();
 	
 	client.emit("assign_id", {id: player_id, game_state:GameEngine.get_gamestate()});
+	io.sockets.emit('new_player', {id: player_id, game_state:GameEngine.get_gamestate()});
+	io.sockets.emit('remove_player', {id: player_id});
 	io.sockets.emit('game_state', GameEngine.get_gamestate());
 	
 	client.on("disconnect", function() {
 		GameEngine.remove_player(client);
+	});
+	
+	client.on("start", function(){
+	  GameEngine.start();
+	  io.sockets.emit('start', GameEngine.get_gamestate());
 	});
 	
 	client.on("action", function(action) {

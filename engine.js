@@ -8,7 +8,9 @@ var game_engine = {
 		for(var i=0; i<this.game_state.punts.length; i++){
 			this.game_state.punts[i].ware = this.game_state.wares[i+1];
 		}
-    this.game_state.phase = 3;
+    this.game_state.phase = 0;
+    this.game_state.started = true;
+    this.start_auction();
 	},
 	
   start_auction:function(){
@@ -55,12 +57,14 @@ var game_engine = {
 	  var current_index = this.game_state.auction_players.indexOf(this.game_state.current_player_id);
 	  var next_player_id = null;
 	  var removeArray = [];
+	  console.log("this.game_state.current_player_id:"+this.game_state.current_player_id);
+	  console.log("current_index:"+current_index);
   	for (var i = 0; i < this.game_state.auction_players.length; i++) {
 			var player = this.game_state.players[this.game_state.auction_players[i]];
 			var share_count = player.shares["nutme"] + player.shares["ginseng"] + player.shares["silk"] + player.shares["jade"];
 			 // || player.connect_statue == false 
-			if ( (player.money + share_count*12) <= this.game_state.auction_price) {
-				player.auction_statue = false;
+			if ( (player.money + share_count*12) <= this.game_state.auction_price || !player.auction_state) {
+				player.auction_state = false;
 				removeArray.push(player.id);
 			}else if(!next_player_id && i > current_index){
 			  next_player_id = player.id;
@@ -68,9 +72,10 @@ var game_engine = {
 		}
 		for(var i=0; i<removeArray.length; i++){
 		  var playerid = removeArray[i];
-		  var index = this.game_stae.auction_players.indexOf(playerid);
+		  var index = this.game_state.auction_players.indexOf(playerid);
 		  this.game_state.auction_players.splice(index, 1);
 		}
+		console.log(this.game_state.auction_players);
 		if(!next_player_id){
 		  next_player_id = this.game_state.auction_players[0];
 		}
@@ -107,7 +112,10 @@ var game_engine = {
 	
 	handle_action : function(action) {
 		//perform action
-		if(action.type === "dice") {
+		if(action.type === "start") {
+			this.start();
+			return true;
+		}if(action.type === "dice") {
 			this.roll_dice();
 			return true;
 		} else if (action.type === "place") {
@@ -133,18 +141,22 @@ var game_engine = {
 
 		this.game_state.last_captain = this.game_state.current_player_id;
 		// console.log(this.game_state.last_captain);
-		this.auction_result();
 		this.next_player();
+		if(this.auction_result()){
+		  this.advance_phase();
+		}
 		return true;
 	},
 	
 	auction_drop : function() {
 		var player = this.game_state.players[this.game_state.current_player_id];
 		player.auction_state = false;	// 将当前player的竞选状态置为false，使之不能参加下次竞选
-		index = this.game_state.auction_players.indexOf(player.id);
-		this.game_state.auction_players.splice(index, 1);
-		this.auction_result();
+    // index = this.game_state.auction_players.indexOf(player.id);
+    // this.game_state.auction_players.splice(index, 1);
 		this.next_player();
+    if(this.auction_result()){
+		  this.advance_phase();
+		}
 		return true;
 	},
 	
@@ -152,6 +164,7 @@ var game_engine = {
     // console.log("last_captain:"+this.game_state.last_captain);
 		if (this.game_state.auction_players.length <= 1) {
 			this.game_state.players[this.game_state.last_captain].roleId = 1;
+			this.game_state.captain_id = this.game_state.last_captain;
 			return true;
 		}else {
 			return false;
@@ -255,6 +268,9 @@ var game_engine = {
 					}
 				}
 				break;
+			}
+			default:{
+			  this.game_state.phase += 1;
 			}
 		}
 		

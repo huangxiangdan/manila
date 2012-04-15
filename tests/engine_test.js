@@ -21,26 +21,26 @@ exports.testCaptainAuction = function(test) {
 	state.players[2].money = 40;
 	state.players[3].money = 40;
 				
-	action = {type : "auction_drop", player_id: 0}
+	action = {type : "auction", player_id: 0, add_price: 2}
 	engine.handle_action(action)
 	action = {type : "auction_drop", player_id: 1}
 	engine.handle_action(action)
 	action = {type : "auction", player_id: 2, add_price: 2}
 	engine.handle_action(action)
-	action = {type : "auction", player_id: 3, add_price: 2}
+	action = {type : "auction_drop", player_id: 3}
 	engine.handle_action(action)
   // console.log(state.current_player_id);
-	test.equal(2, state.current_player_id, "player 3 should be current_player_id");
+	test.equal(0, state.current_player_id, "player 1 should be current_player_id");
 	
-  action = {type : "auction", player_id: 2, add_price: 2}
+  action = {type : "auction", player_id: 0, add_price: 2}
   engine.handle_action(action)
-  action = {type : "auction_drop", player_id: 3}
+  action = {type : "auction_drop", player_id: 2}
   engine.handle_action(action)
   
   engine.auction_result();
   
-  test.equal(1, state.players[2].roleId, "player 3 should be caption");
-  test.equal(2, state.last_captain, "last_captain should be player 3");
+  test.equal(1, state.players[0].roleId, "player 3 should be caption");
+  test.equal(0, state.last_captain, "last_captain should be player 3");
   test.equal(6, state.auction_price, "auction_price should be 6");
 
 	test.done();

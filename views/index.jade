@@ -19,6 +19,8 @@ html(lang="en")
   body
     #heading
       h1 Manila
+      #state
+      #phase
       //- #h2 Phase
       //- #phase
       //- #h2 My Id:
@@ -38,14 +40,19 @@ html(lang="en")
       #role
       #captain
       #auction_price
+      #punts
     #control_panel.navbar.navbar-fixed-bottom
       .navbar-inner
         .container
+          #palyers_panel
           #action_panel
-            h2 请出价竞选船长
-            input#auction_money
-            a#auction.btn.btn-info 出价
-            a#auction_drop.btn.btn-warning 放弃
+            #auction_panel.hidden
+              h2 请出价竞选船长
+              input#auction_money
+              a#auction.btn.btn-info 出价
+              a#auction_drop.btn.btn-warning 放弃
+            #start_panel
+              a#start_game.btn.btn-info 开始游戏
 script(type='text/javascript')
   $('#action_panel #auction').click(function(){
     auction($('#auction_money').val());
@@ -53,4 +60,8 @@ script(type='text/javascript')
   
   $('#action_panel #auction_drop').click(function(){
     auction_drop();
+  });
+  
+  $('#start_game').click(function(){
+    start_game();
   });
