@@ -41,9 +41,13 @@ io.on("connection", function(client) {
 	});
 	
 	client.on("action", function(action) {
+	  var phase = GameEngine.get_gamestate().phase;
 		GameEngine.handle_action(action);
+		if(GameEngine.get_gamestate().phase > phase){
+		  io.sockets.emit('next_phase', GameEngine.get_gamestate());
+		}
 		io.sockets.emit('game_state', GameEngine.get_gamestate());
-	})
+	});
 });
 
 app.listen(3000);

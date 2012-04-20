@@ -1,10 +1,11 @@
 function update(game_state) {
+  var pre_game_state = window.game_state;
 	window.game_state = game_state;
 	
-	$("#players").html($.toJSON(game_state.players));
+  // $("#players").html($.toJSON(game_state.players));
 	$("#phase").html(game_state.phase);
-	$("#spaces").html($.toJSON(game_state.spaces));
-	$("#punts").html($.toJSON(game_state.punts));
+  // $("#spaces").html($.toJSON(game_state.spaces));
+  // $("#punts").html($.toJSON(game_state.punts));
 	$num_players.html(game_state.players.length);
 	$('#player').html('我的ID:'+ my_id);
 	$('#current_player').html('当前行动ID:'+ game_state.current_player_id);
@@ -18,17 +19,21 @@ function update(game_state) {
 	}else{
 	  $('#punts').html("没有货物");
 	}
-	movePunts();
 	
+	movePunts(game_state);
+	show_phase_panel(pre_game_state);
+	unpdate_player_panel();
 	// $ships.html($.toJSON(game_state.punts));
 }
 
-function movePunts(){
+function movePunts(game_state){
 	for(var i=0; i<game_state.punts.length; i++){
 		// console.log(game_state.punts[i].ware.id);
 		var punt = game_state.punts[i];
+		console.log("punt_id:"+punt.id + " state:"+punt.state);
+		console.log("punt_id:"+punt.id + " position:"+punt.position);
 		if(punt.state != 1){
-		  console.log("punt_id:"+punt.id);
+      // console.log("punt_id:"+punt.id);
 		  puntView.place(punt.id, punt.state, punt.order);
 		}else{
 		  puntView.moveTo(punt.id, punt.position);
@@ -131,11 +136,50 @@ function start_game(){
 }
 
 function add_player(id){
-  $("#palyers_panel").append('<div class="player player'+id+'">玩家'+id+'</id>');
+  $("#palyers_panel").append('<div class="player player'+id+'">玩家'+id+'<span></span></id>');
+}
+
+function unpdate_player_panel(){
+  for(var i=0; i< game_state.players.length; i++){
+    var player = game_state.players[i];
+    $('.player'+player.id).find('span').text(player.money);
+  }
+}
+
+function init_punt_position(arr){
+  send_action({type : "init_punts", position: arr});
 }
 
 function remove_player(id){
   $("#palyers_panel").remove('.player'+id);
+}
+
+function show_phase_panel(pre_game_state){
+  var pre_phase = pre_game_state ? pre_game_state.phase : 0;
+  if(game_state.started){
+    $('#action_panel').children().hide();
+    switch(game_state.phase){
+      case -1:
+        if(pre_phase != 0){
+          setTimeout(function(){
+            send_action({type: "ready", player_id:my_id});
+          }, 5000);
+        }
+        break;
+      case 0:
+        $('#auction_panel').show();
+        start_new_auction_phase();
+        break;
+      case 2:
+        $('#move_punt_panel').show();
+        break;
+    }
+  }
+}
+
+function start_new_auction_phase(){
+  spaceView.clean();
+  puntView.init();
 }
 
 function bindSocket(){
@@ -184,5 +228,14 @@ function bindSocket(){
 		update(data);
 		$("#start_panel").hide();
     $("#auction_panel").show();
+	});
+	
+	socket.on("next_phase", function(data){
+	  if(data.phase == 2){
+	    $("#auction_panel").hide();
+	    if(my_id == data.captain_id){
+	      $('#move_punt_panel').show();
+	    }
+	  }
 	});
 }

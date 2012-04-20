@@ -83,6 +83,10 @@ PuntBase.prototype.setPosition = function(position){
 	}, 500);
 }
 
+PuntBase.prototype.pullInWater = function(){
+  this.blockImage.removeClass('fail').removeClass('success');
+}
+
 function PuntView(mapView, image){
 	this.puntMap = {};
 	this.image = image;
@@ -130,6 +134,12 @@ PuntView.prototype.moveTo = function(puntId, position){
 PuntView.prototype.removeAll = function() {
 	this.puntMap = {};
 	$('.punt-viewer').remove();
+};
+
+PuntView.prototype.init = function() {
+  $.each(this.puntMap, function(){
+    this.pullInWater();
+  })
 };
 
 // /**

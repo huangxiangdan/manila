@@ -4,9 +4,9 @@ html(lang="en")
     title Manila
     link(rel="stylesheet", type="text/css", href="/bootstrap.css")
     link(rel="stylesheet", type="text/css", href="/client.css")
-    script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js")
-    script(type="text/javascript", src="http://jquery-json.googlecode.com/files/jquery.json-2.3.min.js")
-    script(type="text/javascript", src="http://localhost:3000/socket.io/socket.io.js")
+    script(type="text/javascript", src="/jquery-1.4.4.min.js")
+    script(type="text/javascript", src="/json2.js")
+    script(type="text/javascript", src="/socket.io/socket.io.js")
     script(type="text/javascript", src="/javascripts/export.js")
     script(type="text/javascript", src="/common/GameState.js")
     script(type="text/javascript", src="/javascripts/config.js")
@@ -51,6 +51,39 @@ html(lang="en")
               input#auction_money
               a#auction.btn.btn-info 出价
               a#auction_drop.btn.btn-warning 放弃
+            #move_punt_panel.hidden
+              form.form-horizontal.left
+                .control-group
+                  .control-label 第一艘
+                  .controls
+                    select.move_punt1
+                      option(value="0") 0
+                      option(value="1") 1
+                      option(value="2") 2
+                      option(value="3") 3
+                      option(value="4") 4
+                      option(value="5", selected="selected" ) 5
+                .control-group
+                  .control-label 第二艘
+                  .controls
+                    select.move_punt2
+                      option(value="0") 0
+                      option(value="1") 1
+                      option(value="2") 2
+                      option(value="3") 3
+                      option(value="4", selected="selected") 4
+                      option(value="5") 5
+                .control-group
+                  .control-label 第三艘
+                  .controls
+                    select.move_punt3
+                      option(value="0") 0
+                      option(value="1") 1
+                      option(value="2") 2
+                      option(value="3") 3
+                      option(value="4") 4
+                      option(value="5") 5
+              a.btn.btn-info.right 完成
             #start_panel
               a#start_game.btn.btn-info 开始游戏
 script(type='text/javascript')
@@ -64,4 +97,12 @@ script(type='text/javascript')
   
   $('#start_game').click(function(){
     start_game();
+  });
+  
+  $('#move_punt_panel .btn').click(function(){
+    if(parseInt($('.move_punt1').val()) + parseInt($('.move_punt2').val()) + parseInt($('.move_punt3').val()) != 9){
+      alert('三艘船总和应该为9！');
+    }else{
+      init_punt_position([parseInt($('.move_punt1').val()), parseInt($('.move_punt2').val()), parseInt($('.move_punt3').val())]);
+    }
   });

@@ -14,8 +14,17 @@ var game_engine = {
 	},
 	
   start_auction:function(){
+    this.game_state.auction_players = [];
+    this.game_state.auction_price = 0;
     for(var i=0; i<this.game_state.players.length; i++){
       this.game_state.auction_players.push(this.game_state.players[i].id);
+    }
+    for(var i=0; i<this.game_state.punts.length; i++){
+      this.game_state.punts[i].init();
+			this.game_state.punts[i].ware = this.game_state.wares[i+1];
+		}
+		for(var i=0; i<this.game_state.spaces.length; i++){
+      this.game_state.spaces[i].owner = null;
     }
   },
 
@@ -41,7 +50,7 @@ var game_engine = {
 	},
 
 	next_player : function() {
-		if (this.num_players == 0) {
+		if (this.game_state.players.length == 0) {
 			return 0;
 		}
 		if(this.game_state.phase == 0){
@@ -57,8 +66,8 @@ var game_engine = {
 	  var current_index = this.game_state.auction_players.indexOf(this.game_state.current_player_id);
 	  var next_player_id = null;
 	  var removeArray = [];
-	  console.log("this.game_state.current_player_id:"+this.game_state.current_player_id);
-	  console.log("current_index:"+current_index);
+	  // console.log("this.game_state.current_player_id:"+this.game_state.current_player_id);
+    // console.log("current_index:"+current_index);
   	for (var i = 0; i < this.game_state.auction_players.length; i++) {
 			var player = this.game_state.players[this.game_state.auction_players[i]];
 			var share_count = player.shares["nutme"] + player.shares["ginseng"] + player.shares["silk"] + player.shares["jade"];
@@ -75,7 +84,7 @@ var game_engine = {
 		  var index = this.game_state.auction_players.indexOf(playerid);
 		  this.game_state.auction_players.splice(index, 1);
 		}
-		console.log(this.game_state.auction_players);
+		// console.log(this.game_state.auction_players);
 		if(!next_player_id){
 		  next_player_id = this.game_state.auction_players[0];
 		}
@@ -115,10 +124,14 @@ var game_engine = {
 		if(action.type === "start") {
 			this.start();
 			return true;
-		}if(action.type === "dice") {
+		}else if(action.type === "dice") {
 			this.roll_dice();
 			return true;
-		} else if (action.type === "place") {
+		}else if(action.type === "ready"){
+		  this.start_new_auction_phase();
+		}else if(action.type === "init_punts"){
+		  return this.init_punts(action);
+		}else if (action.type === "place") {
 			return this.place_dude(action);
 		} else if (action.type === "choose_ware") {
 			return this.choose_ware(action);
@@ -128,6 +141,32 @@ var game_engine = {
 			return this.auction_drop();
 		}
 		return false;
+	},
+	
+	init_punts:function(action){
+	  var array = action.position;
+	  if(array[0] + array[1] + array[2] == 9){
+	    // console.log(array[0] + array[1] + array[2]);
+	    var result = true;
+	    for(var i in array){
+	      if(array[i]>5 || array[i]<0){
+	        result = false;
+	      }
+	    }
+	    if(result){
+	      this.game_state.punts[0].position = array[0];
+    	  this.game_state.punts[1].position = array[1];
+    	  this.game_state.punts[2].position = array[2];
+    	  this.advance_phase();
+	    }
+  	  return result;
+	  }
+	  return false;
+	},
+	
+	start_new_auction_phase:function(action){
+	  this.game_state.acted_players += 1;
+	  this.advance_phase();
 	},
 	
 	auction : function(action) {
@@ -164,6 +203,7 @@ var game_engine = {
     // console.log("last_captain:"+this.game_state.last_captain);
 		if (this.game_state.auction_players.length <= 1) {
 			this.game_state.players[this.game_state.last_captain].roleId = 1;
+			this.game_state.players[this.game_state.last_captain].money -= this.game_state.auction_price;
 			this.game_state.captain_id = this.game_state.last_captain;
 			return true;
 		}else {
@@ -238,6 +278,19 @@ var game_engine = {
 			engine.roll_dice();
 		}
 		switch(this.game_state.phase) {
+		  case -1:{   //waiting user_action phase
+		    if(this.game_state.acted_players == this.game_state.players.length) {
+		      this.game_state.phase = 0;
+		      this.game_state.acted_players = 0;
+		      this.start_auction();
+	      }
+	      break;
+		  }
+		  case 0:{
+		    this.game_state.phase += 1;
+		    this.game_state.phase += 1;
+		    break;
+		  }
 			case 3: {
 				//check phase
 				if(this.game_state.acted_players == this.game_state.players.length) {
@@ -264,7 +317,8 @@ var game_engine = {
 					if(this.end_conditions_met()) {
 						this.game_state.phase = 7; //game over
 					} else {
-						this.game_state.phase = 3;
+						this.game_state.phase = -1;
+						//this.start_auction();
 					}
 				}
 				break;
@@ -293,19 +347,18 @@ var game_engine = {
 		for(var i = 0; i < ships.length; i++) {
 			var ship = ships[i];
 			if(ship.position > 13) {
-				console.log("crossed:" + ship.ware)
+				console.log("crossed:" + ship.ware.name)
 				ships_crossed += 1;
 				
-				var spaces = this.spaces_with_ware(ship.ware, true);
-				console.log("spaces with " + ship.ware + ":" + spaces.length);
-				var loot = spaces.length === 0 ? 0 : this.value_of_ware(ship.ware) / spaces.length;
+				var spaces = this.spaces_with_ware(ship.ware.name, true);
+				console.log("spaces with " + ship.ware.name + ":" + spaces.length);
+				var loot = spaces.length === 0 ? 0 : ship.ware.earn / spaces.length;
 				for(var j = 0; j < spaces.length; j++) {
 					var space = spaces[j];
 					players[space.owner].money += loot;
 				}		
 			}
 		}
-		
 		//now assign the rest of spaces
 		var spaces = this.game_state.spaces;
 		for(var i = 13; i < spaces.length; i++) {
@@ -330,15 +383,7 @@ var game_engine = {
 			}
 		}
 		return ret;
-	},
-	
-	value_of_ware : function(ware) {
-		if(ware === "silk") {
-			return 36;
-		} else {
-			return 18;
-		}
-	},
+	}
 	
 }
 

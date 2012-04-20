@@ -95,6 +95,29 @@ exports.testAddPlayers = function(test){
     test.done();
 };
 
+exports.testStartNewAuctionPhase = function(test){
+	var engine = require("../engine").init();
+	var state = engine.get_gamestate();
+	test.equal(state.players.length, 0, "the game should start with 0 players");
+	var client1 = {id:1};
+	var client2 = {id:2};
+	engine.add_player(client1);
+	engine.add_player(client2);
+	state = engine.get_gamestate();
+	state.phase = -1;
+	test.equal(-1, state.phase, "the phase should be ready phase_1")
+	action = {type : "ready", player_id: 0}
+	engine.handle_action(action)
+	
+	test.equal(-1, state.phase, "the phase should be ready phase_2")
+	
+	action = {type : "ready", player_id: 1}
+	engine.handle_action(action)
+	
+	test.equal(0, state.phase, "the phase should be auction phase")
+  test.done();
+};
+
 exports.testPunts = function(test) {
 	var engine = require("../engine").init();
 	var punts = engine.get_gamestate().punts;
@@ -148,6 +171,33 @@ exports.testDice = function(test){
 	
     test.done();
 };
+
+exports.testInitPunts = function(test) {
+	//create the engine
+	var engine = require("../engine").init();
+	var client1 = {id:1};
+	var client2 = {id:2};
+	var client3 = {id:3};
+	engine.add_player(client1);
+	engine.add_player(client2);
+	engine.add_player(client3);
+	
+	var players = engine.get_gamestate().players;
+	test.equal(3, players.length, "there should be 3 players")
+	
+	var action = {type : "init_punts", position:[0,1,1]};
+	test.ok(!engine.handle_action(action), "sum of position should be 9");
+	
+	var action = {type : "init_punts", position:[1,4,4]};
+	test.ok(engine.handle_action(action), "sum of position should be 9");
+  test.equal(1, engine.get_gamestate().punts[0].position, "punt 1 should be postion 1");
+  test.equal(4, engine.get_gamestate().punts[1].position, "punt 2 should be postion 4");
+  
+	var action = {type : "init_punts", position:[8,0,1]};
+	test.ok(!engine.handle_action(action), "none of punt would > 5");
+	
+	test.done();
+}
 
 exports.testPlayers = function(test) {
 	//create the engine
@@ -239,7 +289,7 @@ exports.testAdvancePhase = function(test) {
 	test.ok(engine.handle_action({type : "place", player_id: players[1].id, space_id:4}), "place 2");
 	test.equal(5, engine.get_gamestate().phase);
 	test.ok(engine.handle_action({type : "place", player_id: players[2].id, space_id:5}), "place 3");
-	test.equal(3, engine.get_gamestate().phase, "advance to next phase");
+	test.equal(-1, engine.get_gamestate().phase, "advance to ready phase");
 	
 	test.equal(0, engine.get_punt_count(1), "place punt");
 	test.equal(3, engine.get_punt_count(2)+engine.get_punt_count(3), "place punt");
@@ -259,6 +309,7 @@ exports.computeRoundResult = function(test) {
 	engine.add_player(client1);
 	engine.add_player(client2);
 	engine.add_player(client3);
+	var state = engine.get_gamestate();
 	var players = engine.get_gamestate().players;
 	
 	//give players some shares
@@ -274,11 +325,11 @@ exports.computeRoundResult = function(test) {
 
 	//setup ship
 	var punts = engine.get_gamestate().punts
-	punts[0].ware = "silk";
+	punts[0].ware = state.wares[1]; //silk
 	punts[0].position = 16;
-	punts[1].ware = "nutme";
+	punts[1].ware = state.wares[0]; //nutme
 	punts[1].position = 12;
-	punts[2].ware = "jade";
+	punts[2].ware = state.wares[3]; //jade
 	punts[2].position = 18;
 	
 	//set some share prices
@@ -288,16 +339,16 @@ exports.computeRoundResult = function(test) {
 	engine.compute_round_score();
 	
 	//check the following conditions:
-	//player 1 and 2 gets to split silk's 36(+ 18 each)
+	//player 1 and 2 gets to split silk's 30(+ 15 each)
 	//player 1 gets 4 points for a ship crossing and player 2 gets +6 points for 2 ships crossing
 	
 
 	//everyone's money is updated
-	test.equal(54, players[1].money, "player 1 loot")
-	test.equal(56, players[2].money, "player 2 loot")
+	test.equal(51, players[1].money, "player 1 loot")
+	test.equal(53, players[2].money, "player 2 loot")
 
 	//compute final score
-	test.equal(94, players[1].total_score(engine.get_gamestate()), "player 1's score including stocks")
+	test.equal(91, players[1].total_score(engine.get_gamestate()), "player 1's score including stocks")
 	
 	test.done();
 }

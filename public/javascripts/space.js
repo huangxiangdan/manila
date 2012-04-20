@@ -13,25 +13,29 @@ SpaceBase.prototype._init = function(position){
 	var _width = 60 * this.scale;
 	var _height = 60 * this.scale;
 	
-	this.offsetX = 5;
-	this.offsetY = 5;
 	
-	this.blockImage = $('<canvas width="' + _width + '" height="' + _height + '"></canvas>').appendTo(this.container);
+	
+	this.blockImage = $('<canvas class="space" width="' + _width + '" height="' + _height + '"></canvas>').appendTo(this.container);
 	var $this = this;
 	this.blockImage.click(function(){
 		$this.click();
 	});
 	// console.log(this.container);
 	this.context = this.blockImage[0].getContext("2d");
-	
-	// console.log(this.image, 100 * this.scale);
+	this.drawSpace();
+	// this.context.drawImage(this.image, 0, 0, _width, _height);	
+}
 
+SpaceBase.prototype.drawSpace = function(e){
+  this.offsetX = 5;
+	this.offsetY = 5;
+  this.context.clearRect ( 0 , 0 , 60 * this.scale , 60 * this.scale );
+  // console.log(this.image, 100 * this.scale);
 	this.context.beginPath();
 	this.context.arc(25+this.offsetX, 25+this.offsetY, 25, 0, Math.PI*2, true);
 	this.context.closePath();
 	this.context.fillStyle = "rgba(255, 0, 0, 0.25)";
 	this.context.fill();
-	// this.context.drawImage(this.image, 0, 0, _width, _height);	
 }
 
 SpaceBase.prototype.click = function(e){
@@ -78,6 +82,12 @@ SpaceView.prototype.add = function(spaceId, position, puntId) {
 	
 	this.spaceMap[spaceId] = space;
 };
+
+SpaceView.prototype.clean = function(){
+  $.each(this.spaceMap, function(i, space){
+    space.drawSpace();
+  });
+}
 
 // /**
 //  ** 移除一个block
