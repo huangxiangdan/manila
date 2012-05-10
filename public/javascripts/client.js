@@ -1,7 +1,7 @@
 function update(game_state) {
   var pre_game_state = window.game_state;
 	window.game_state = game_state;
-	
+
   // $("#players").html($.toJSON(game_state.players));
 	$("#phase").html(game_state.phase);
   // $("#spaces").html($.toJSON(game_state.spaces));
@@ -136,13 +136,20 @@ function start_game(){
 }
 
 function add_player(id){
-  $("#palyers_panel").append('<div class="player player'+id+'">玩家'+id+'<span></span></id>');
+  $("#palyers_panel").append('<div class="player player'+id+'">玩家'+id+'<div class="money"></div><div class="share"></div></div>');
 }
 
 function unpdate_player_panel(){
   for(var i=0; i< game_state.players.length; i++){
     var player = game_state.players[i];
-    $('.player'+player.id).find('span').text(player.money);
+    $('.player'+player.id).find('.money').text(player.money);
+    var shares = "";
+    for(var share_name in player.shares){
+      if(player.shares[share_name] != 0){
+        shares += share_name + ":" + player.shares[share_name] + " ";
+      }
+    }
+    $('.player'+player.id).find('.share').text(shares);
   }
 }
 
@@ -170,6 +177,16 @@ function show_phase_panel(pre_game_state){
         $('#auction_panel').show();
         start_new_auction_phase();
         break;
+      case 1:
+        $('#choose_share_panel').show();
+        $('#choose_share').empty();
+        for(var share_name in game_state.shares){
+          if(game_state.shares[share_name] > 0){
+            $('#choose_share').append('<option value="'+share_name+'">'+share_name + ":" + game_state.shares[share_name]+'</option>');
+          }
+        }
+        // alert("choose share please");
+        break;
       case 2:
         $('#move_punt_panel').show();
         break;
@@ -180,6 +197,10 @@ function show_phase_panel(pre_game_state){
 function start_new_auction_phase(){
   spaceView.clean();
   puntView.init();
+}
+
+function choose_share(share){
+  send_action({type : "choose_share", player_id: my_id, share:share});
 }
 
 function bindSocket(){

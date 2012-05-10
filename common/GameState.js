@@ -63,6 +63,17 @@ GameState.prototype.init = function(){
 
 	this.shares = {"nutme" : 5, "ginseng" : 5, "silk" : 5, "jade" : 5}
 	this.share_prices = {"nutme" : 5, "ginseng" : 5, "silk" : 5, "jade" : 5}
+	this.shares_array = this.get_shares_array();
 };
+
+GameState.prototype.get_shares_array = function(){
+  var shares_ary = [];
+  for(var share in this.shares){
+    for(var i=0; i<this.shares[share]; i++){
+      shares_ary.push(share);
+    }
+  }
+  return shares_ary;
+}
 
 module.exports = GameState;

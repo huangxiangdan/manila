@@ -6,3 +6,13 @@ Array.prototype.remove = function(b) {
 	} 
 	return false; 
 };
+
+var total = function(obj){
+  var length = 0;
+  for(var proto in obj){
+    if(!(obj[proto] instanceof Function)){
+      length += obj[proto];
+    }
+  }
+  return length;
+};

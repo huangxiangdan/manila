@@ -132,6 +132,36 @@ exports.testPunts = function(test) {
 	test.done();
 }
 
+exports.testChooseShare = function(test) {
+	var engine = require("../engine").init();
+	var state = engine.get_gamestate();
+	
+	var client1 = {id:1};
+	var client2 = {id:2};
+	var client3 = {id:3};
+	var client4 = {id:4};
+	engine.add_player(client1);
+	engine.add_player(client2);
+
+	engine.start();
+
+	test.equal(2, total(state.players[0].shares), "everyone should get 2 shares.");
+	test.equal(2, total(state.players[1].shares), "everyone should get 2 shares.");
+	
+  state.players[0].rollId = 1;
+	var action = {type : "choose_share", player_id: 1, share: "silk"};
+	test.ok(!engine.handle_action(action), "choose share action should not succeed");
+
+	var action = {type : "choose_share", player_id: 0, share: "silk"};
+	test.ok(engine.handle_action(action), "choose share action should succeed");
+	
+	console.log(state.shares.length);
+	
+	test.equal(15, total(state.shares), "shares should be 11");
+	test.equal(15, state.shares_array.length, "shares_array should be 11");
+	test.done();
+}
+
 exports.chooseWare = function(test) {
 	var engine = require("../engine").init();
 
@@ -347,6 +377,7 @@ exports.computeRoundResult = function(test) {
 	test.equal(51, players[1].money, "player 1 loot")
 	test.equal(53, players[2].money, "player 2 loot")
 
+  console.log(players[1].total_score(engine.get_gamestate()));
 	//compute final score
 	test.equal(91, players[1].total_score(engine.get_gamestate()), "player 1's score including stocks")
 	

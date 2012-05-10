@@ -1,5 +1,6 @@
 var GameState = require('./common/GameState.js');
 var Player = require('./models/player.js');
+require('./common/utils.js');
 //the game engine
 var game_engine = {
 	game_state : new GameState(),
@@ -10,6 +11,7 @@ var game_engine = {
 		}
     this.game_state.phase = 0;
     this.game_state.started = true;
+    this.init_shares();
     this.start_auction();
 	},
 	
@@ -119,6 +121,17 @@ var game_engine = {
 	  }
 	},
 	
+	init_shares:function(){
+	  for(var k=0; k<2; k++){
+	    for(var i = 0; i < this.game_state.players.length; i++){
+  			var j = Math.floor(Math.random()*this.game_state.shares_array.length);	// random num
+  			var player = this.game_state.players[i];
+  			var share = this.game_state.shares_array[j];
+  			this.choose_share(player, share);
+  		}
+	  }
+	},
+	
 	handle_action : function(action) {
 		//perform action
 		if(action.type === "start") {
@@ -139,6 +152,8 @@ var game_engine = {
 			return this.auction(action);
 		} else if (action.type === "auction_drop") {
 			return this.auction_drop();
+		} else if (action.type === "choose_share") {
+		  return this.choose_share_by_action(action);
 		}
 		return false;
 	},
@@ -209,6 +224,26 @@ var game_engine = {
 		}else {
 			return false;
 		}
+	},
+	
+	choose_share_by_action:function(action){
+	  var player = this.game_state.players[action.player_id];
+	  if(player.roleId != 1){
+	    return false;
+	  }
+	  var share = action.share;
+	  this.advance_phase();
+	  return this.choose_share(player, share);
+	},
+	
+	choose_share:function(player, share){
+	  if(this.game_state.shares[share] > 0){
+	    player.shares[share] += 1;
+  		this.game_state.shares[share] -= 1;
+  		this.game_state.shares_array.remove(share);
+  		return true;
+	  }
+	  return false;
 	},
 	
 	roll_dice : function() {
@@ -285,11 +320,6 @@ var game_engine = {
 		      this.start_auction();
 	      }
 	      break;
-		  }
-		  case 0:{
-		    this.game_state.phase += 1;
-		    this.game_state.phase += 1;
-		    break;
 		  }
 			case 3: {
 				//check phase

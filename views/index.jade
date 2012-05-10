@@ -46,6 +46,10 @@ html(lang="en")
         .container
           #palyers_panel
           #action_panel
+            #choose_share_panel.hidden
+              h2 请选择
+              select#choose_share
+              a.btn.btn-info.right 确定
             #auction_panel.hidden
               h2 请出价竞选船长
               input#auction_money
@@ -105,4 +109,8 @@ script(type='text/javascript')
     }else{
       init_punt_position([parseInt($('.move_punt1').val()), parseInt($('.move_punt2').val()), parseInt($('.move_punt3').val())]);
     }
+  });
+  
+  $('#choose_share_panel .btn').click(function(){
+    choose_share($('#choose_share').val());
   });

@@ -21,6 +21,10 @@ body{
 /*	background:url("images/map_bg.jpg");*/
 }
 
+/*#action_panel{
+  padding:10px;
+}*/
+
 #control_panel > .navbar-inner{
   opacity:0.9;
 }
