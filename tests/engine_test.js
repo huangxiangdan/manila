@@ -1,3 +1,13 @@
+var total = function(obj){
+  var length = 0;
+  for(var proto in obj){
+    if(!(obj[proto] instanceof Function)){
+      length += obj[proto];
+    }
+  }
+  return length;
+};
+
 exports.testCaptainAuction = function(test) {
 	var engine = require("../engine").init();
 	var state = engine.get_gamestate();
@@ -148,7 +158,7 @@ exports.testChooseShare = function(test) {
 	test.equal(2, total(state.players[0].shares), "everyone should get 2 shares.");
 	test.equal(2, total(state.players[1].shares), "everyone should get 2 shares.");
 	
-  state.players[0].rollId = 1;
+  state.players[0].roleId = 1;
 	var action = {type : "choose_share", player_id: 1, share: "silk"};
 	test.ok(!engine.handle_action(action), "choose share action should not succeed");
 
@@ -376,7 +386,6 @@ exports.computeRoundResult = function(test) {
 	//everyone's money is updated
 	test.equal(51, players[1].money, "player 1 loot")
 	test.equal(53, players[2].money, "player 2 loot")
-
   console.log(players[1].total_score(engine.get_gamestate()));
 	//compute final score
 	test.equal(91, players[1].total_score(engine.get_gamestate()), "player 1's score including stocks")
@@ -384,9 +393,23 @@ exports.computeRoundResult = function(test) {
 	test.done();
 }
 
-
-
-
+exports.findoutWinner = function(test) {
+	//create engine
+	var engine = require("../engine").init();
+	var client1 = {id:1};
+	var client2 = {id:2};
+	var client3 = {id:3};
+	engine.add_player(client1);
+	engine.add_player(client2);
+	engine.add_player(client3);
+	var state = engine.get_gamestate();
+	var players = engine.get_gamestate().players;
+	players[0].money = 100;
+	players[1].money = 10;
+	engine.find_out_winner();
+	test.equal(players[0].name, state.winner.name, "wrong winner");
+	test.done();
+}
 
 
 

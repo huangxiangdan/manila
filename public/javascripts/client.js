@@ -21,6 +21,7 @@ function update(game_state) {
 	}
 	
 	movePunts(game_state);
+	moveShares(game_state);
 	show_phase_panel(pre_game_state);
 	unpdate_player_panel();
 	// $ships.html($.toJSON(game_state.punts));
@@ -30,14 +31,20 @@ function movePunts(game_state){
 	for(var i=0; i<game_state.punts.length; i++){
 		// console.log(game_state.punts[i].ware.id);
 		var punt = game_state.punts[i];
-		console.log("punt_id:"+punt.id + " state:"+punt.state);
-		console.log("punt_id:"+punt.id + " position:"+punt.position);
+    // console.log("punt_id:"+punt.id + " state:"+punt.state);
+    // console.log("punt_id:"+punt.id + " position:"+punt.position);
 		if(punt.state != 1){
       // console.log("punt_id:"+punt.id);
 		  puntView.place(punt.id, punt.state, punt.order);
 		}else{
 		  puntView.moveTo(punt.id, punt.position);
 		}
+	}
+}
+
+function moveShares(game_state){
+  for(var share_name in game_state.share_prices) {
+		shareView.place(share_name, game_state.share_prices[share_name]);
 	}
 }
 
@@ -77,9 +84,14 @@ function game_init(game_state){
   $("#palyers_panel").empty();
 	window.puntView = new PuntView(mapView, imageCache['punt']);
 	window.spaceView = new SpaceView(null);
+	window.shareView = new ShareView();
 	for(var i=0; i<game_state.punts.length; i++){
 		var punt = game_state.punts[i];
 		puntView.add(punt.id, punt.position);
+	}
+  for(var share_name in game_state.share_prices) {
+    shareView.add(share_name);
+		shareView.place(share_name, game_state.share_prices[share_name]);
 	}
 	for(var i=0; i<game_state.spaces.length; i++){
 		var space = game_state.spaces[i];
@@ -189,6 +201,9 @@ function show_phase_panel(pre_game_state){
         break;
       case 2:
         $('#move_punt_panel').show();
+        break;
+      case 7:
+        alert("游戏结束,胜利者是"+game_state.winner.name);
         break;
     }
   }

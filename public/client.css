@@ -48,10 +48,17 @@ canvas{
 	left: 0px;
 }
 
-.punt-viewer {
+.punt-viewer{
 	position:absolute;
 	left:0;
 	top:0;
+	z-index: 300;
+}
+
+.share-viewer{
+	position:absolute;
+	left:780px;
+	top:1380px;
 	z-index: 300;
 }
 

@@ -239,6 +239,7 @@ var game_engine = {
 	choose_share:function(player, share){
 	  if(this.game_state.shares[share] > 0){
 	    player.shares[share] += 1;
+	    player.money -= (this.game_state.share_prices[share] == 0 ? 5 : this.game_state.share_prices[share]);
   		this.game_state.shares[share] -= 1;
   		this.game_state.shares_array.remove(share);
   		return true;
@@ -344,8 +345,10 @@ var game_engine = {
 					end_of_placement(this);
     			this.place_fail_punt();
 					this.compute_round_score();
+					this.compute_share_price();
 					if(this.end_conditions_met()) {
 						this.game_state.phase = 7; //game over
+						this.find_out_winner();
 					} else {
 						this.game_state.phase = -1;
 						//this.start_auction();
@@ -369,6 +372,19 @@ var game_engine = {
 		return false;
 	},
 	
+	find_out_winner:function(){
+	  var players = this.game_state.players;
+	  var max = 0;
+	  var winner;
+    for(var i=0; i<players.length; i++){
+      if(players[i].total_score(this.game_state) > max){
+        max = players[i].total_score(this.game_state);
+        winner = players[i];
+      }
+    }
+    this.game_state.winner = winner;
+	},
+	
 	compute_round_score : function() {
 		//tally up the score
 		var ships_crossed = 0;
@@ -386,7 +402,7 @@ var game_engine = {
 				for(var j = 0; j < spaces.length; j++) {
 					var space = spaces[j];
 					players[space.owner].money += loot;
-				}		
+				}
 			}
 		}
 		//now assign the rest of spaces
@@ -398,6 +414,17 @@ var game_engine = {
 			}
 		}		
 	},
+	
+	compute_share_price : function() {
+	  var ships = this.game_state.punts;
+		var players = this.game_state.players;
+		for(var i = 0; i < ships.length; i++) {
+			var ship = ships[i];
+			if(ship.position > 13) {
+			  this.game_state.share_prices[ship.ware.name] += (this.game_state.share_prices[ship.ware.name] < 10 ? 5 : 10);
+		  }
+	  }
+  },
 	
 	spaces_with_ware : function(ware, skip_empty) {
 		var spaces = this.game_state.spaces;

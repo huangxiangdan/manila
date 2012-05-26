@@ -62,7 +62,7 @@ GameState.prototype.init = function(){
 	this.wares = [nutme_ware, silk_ware, ginseng_ware, jade_ware];
 
 	this.shares = {"nutme" : 5, "ginseng" : 5, "silk" : 5, "jade" : 5}
-	this.share_prices = {"nutme" : 5, "ginseng" : 5, "silk" : 5, "jade" : 5}
+	this.share_prices = {"nutme" : 0, "ginseng" : 0, "silk" : 0, "jade" : 0}
 	this.shares_array = this.get_shares_array();
 };
 
