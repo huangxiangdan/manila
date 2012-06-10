@@ -158,15 +158,24 @@ function unpdate_player_panel(){
     var shares = "";
     for(var share_name in player.shares){
       if(player.shares[share_name] != 0){
-        shares += share_name + ":" + player.shares[share_name] + " ";
+        shares += get_ware_alias(share_name) + ":" + player.shares[share_name] + " ";
       }
     }
     $('.player'+player.id).find('.share').text(shares);
   }
 }
 
-function init_punt_position(arr){
-  send_action({type : "init_punts", position: arr});
+function get_ware_alias(share_name){
+  for(var i=0;i<game_state.wares.length; i++){
+    if(share_name == game_state.wares[i].name){
+      return game_state.wares[i].alias;
+    }
+  }
+  return share_name;
+}
+
+function init_punt_position(wares, arr){
+  send_action({type : "init_punts", position: arr, wares: wares});
 }
 
 function remove_player(id){
@@ -192,20 +201,34 @@ function show_phase_panel(pre_game_state){
       case 1:
         $('#choose_share_panel').show();
         $('#choose_share').empty();
-        for(var share_name in game_state.shares){
-          if(game_state.shares[share_name] > 0){
-            $('#choose_share').append('<option value="'+share_name+'">'+share_name + ":" + game_state.shares[share_name]+'</option>');
+        for(var i=0; i<game_state.wares.length; i++){
+          if(game_state.shares[game_state.wares[i].name] > 0){
+            $('#choose_share').append('<option value="'+game_state.wares[i].name+'">'+game_state.wares[i].alias + ":" + game_state.shares[game_state.wares[i].name]+'</option>');
           }
         }
         // alert("choose share please");
         break;
       case 2:
         $('#move_punt_panel').show();
+        for(var i=0; i<game_state.wares.length; i++){
+          $('#move_punt_panel .choose_punt').append('<option value="'+game_state.wares[i].name+'">'+ game_state.wares[i].alias +'</option>');
+        }
+        $('#move_punt_panel .choose_punt').each(function(i, item){
+          $(this).get(0).selectedIndex = i;
+        });
+        break;
+      case 3:
+        if(pre_phase == 2){
+          game_start(game_state);
+        }
         break;
       case 7:
         alert("游戏结束,胜利者是"+game_state.winner.name);
+        $("#start_panel").show();
         break;
     }
+  }else{
+    $("#start_panel").show();
   }
 }
 
@@ -233,10 +256,13 @@ function bindSocket(){
 	socket.on("assign_id", function(data) {
 		// console.log(data);
 		my_id = data.id;
+		if(my_id == -1){
+		  alert('当前游戏已经开始，您只能观看别人的游戏，请等游戏结束之后，你就有机会加入');
+		}
 		window.game_state = data.game_state;
 		if(game_state){
 		  game_init(game_state);
-		  if(game_state.started){
+		  if(game_state.started && game_state.phase > 2){
 		    game_start(game_state);
 		  }
 			for(i=0; i<data.game_state.players.length; i++){
@@ -260,7 +286,7 @@ function bindSocket(){
 	
 	socket.on("start", function(data) {
 		// console.log(data);
-		game_start(data);
+		//game_start(data);
 		update(data);
 		$("#start_panel").hide();
     $("#auction_panel").show();

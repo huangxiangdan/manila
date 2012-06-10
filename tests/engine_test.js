@@ -225,15 +225,15 @@ exports.testInitPunts = function(test) {
 	var players = engine.get_gamestate().players;
 	test.equal(3, players.length, "there should be 3 players")
 	
-	var action = {type : "init_punts", position:[0,1,1]};
+	var action = {type : "init_punts", position:[0,1,1], wares:[1,2,3]};
 	test.ok(!engine.handle_action(action), "sum of position should be 9");
 	
-	var action = {type : "init_punts", position:[1,4,4]};
+	var action = {type : "init_punts", position:[1,4,4], wares:[1,2,3]};
 	test.ok(engine.handle_action(action), "sum of position should be 9");
   test.equal(1, engine.get_gamestate().punts[0].position, "punt 1 should be postion 1");
   test.equal(4, engine.get_gamestate().punts[1].position, "punt 2 should be postion 4");
   
-	var action = {type : "init_punts", position:[8,0,1]};
+	var action = {type : "init_punts", position:[8,0,1], wares:[1,2,3]};
 	test.ok(!engine.handle_action(action), "none of punt would > 5");
 	
 	test.done();

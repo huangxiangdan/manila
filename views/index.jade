@@ -20,6 +20,7 @@ html(lang="en")
   body
     #heading
       h1 Manila
+      a(href="/Manila_CT.pdf") 帮助
       #state
       #phase
       //- #h2 Phase
@@ -61,6 +62,7 @@ html(lang="en")
                 .control-group
                   .control-label 第一艘
                   .controls
+                    select.choose_punt
                     select.move_punt1
                       option(value="0") 0
                       option(value="1") 1
@@ -71,6 +73,7 @@ html(lang="en")
                 .control-group
                   .control-label 第二艘
                   .controls
+                    select.choose_punt
                     select.move_punt2
                       option(value="0") 0
                       option(value="1") 1
@@ -81,6 +84,7 @@ html(lang="en")
                 .control-group
                   .control-label 第三艘
                   .controls
+                    select.choose_punt
                     select.move_punt3
                       option(value="0") 0
                       option(value="1") 1
@@ -107,8 +111,14 @@ script(type='text/javascript')
   $('#move_punt_panel .btn').click(function(){
     if(parseInt($('.move_punt1').val()) + parseInt($('.move_punt2').val()) + parseInt($('.move_punt3').val()) != 9){
       alert('三艘船总和应该为9！');
+    }else if($('#move_punt_panel .choose_punt').get(0).selectedIndex == $('#move_punt_panel .choose_punt').get(1).selectedIndex || 
+      $('#move_punt_panel .choose_punt').get(0).selectedIndex == $('#move_punt_panel .choose_punt').get(2).selectedIndex ||
+      $('#move_punt_panel .choose_punt').get(2).selectedIndex == $('#move_punt_panel .choose_punt').get(1).selectedIndex){
+      alert('不能选同一艘船！');
     }else{
-      init_punt_position([parseInt($('.move_punt1').val()), parseInt($('.move_punt2').val()), parseInt($('.move_punt3').val())]);
+      var wares = [$('#move_punt_panel .choose_punt').get(0).selectedIndex, $('#move_punt_panel .choose_punt').get(1).selectedIndex,
+        $('#move_punt_panel .choose_punt').get(2).selectedIndex];
+      init_punt_position(wares, [parseInt($('.move_punt1').val()), parseInt($('.move_punt2').val()), parseInt($('.move_punt3').val())]);
     }
   });
   

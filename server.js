@@ -12,7 +12,7 @@ app.get('/common/*.(js|css|jpg|png)' , function(req, res) {
 });
 
 
-app.get('/*.(js|css|jpg|png)' , function(req, res) {
+app.get('/*.(js|css|jpg|png|pdf)' , function(req, res) {
 	res.sendfile("./public"+req.url);
 });
 

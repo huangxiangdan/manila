@@ -6,9 +6,16 @@ var game_engine = {
 	game_state : new GameState(),
 	
 	start : function(){
-		for(var i=0; i<this.game_state.punts.length; i++){
-			this.game_state.punts[i].ware = this.game_state.wares[i+1];
-		}
+    // for(var i=0; i<this.game_state.punts.length; i++){
+    //  this.game_state.punts[i].ware = this.game_state.wares[i+1];
+    // }
+    if(this.game_state.started){
+      return;
+    }
+    for(var i=0; i<this.game_state.players.length; i++){
+      this.game_state.players[i].init();
+    }
+    this.game_state.init();
     this.game_state.phase = 0;
     this.game_state.started = true;
     this.init_shares();
@@ -23,7 +30,7 @@ var game_engine = {
     }
     for(var i=0; i<this.game_state.punts.length; i++){
       this.game_state.punts[i].init();
-			this.game_state.punts[i].ware = this.game_state.wares[i+1];
+      // this.game_state.punts[i].ware = this.game_state.wares[i+1];
 		}
 		for(var i=0; i<this.game_state.spaces.length; i++){
       this.game_state.spaces[i].owner = null;
@@ -31,6 +38,9 @@ var game_engine = {
   },
 
 	add_player : function(client) {
+	  if(this.game_state.started){
+	    return -1;
+	  }
 		var player_id = this.game_state.players.length;
     // console.log("clientId:"+client.id);
 		this.game_state.players.push(new Player(player_id, client.id, "test"));
@@ -49,6 +59,9 @@ var game_engine = {
 			}
 		}
 		this.game_state.players.remove(selected);
+		if(this.game_state.players.length == 0){
+		  this.game_state.started = false;
+		}
 	},
 
 	next_player : function() {
@@ -127,7 +140,7 @@ var game_engine = {
   			var j = Math.floor(Math.random()*this.game_state.shares_array.length);	// random num
   			var player = this.game_state.players[i];
   			var share = this.game_state.shares_array[j];
-  			this.choose_share(player, share);
+  			this.choose_share(player, share, false);
   		}
 	  }
 	},
@@ -160,9 +173,10 @@ var game_engine = {
 	
 	init_punts:function(action){
 	  var array = action.position;
+	  var wares = action.wares;
+	  var result = true;
 	  if(array[0] + array[1] + array[2] == 9){
 	    // console.log(array[0] + array[1] + array[2]);
-	    var result = true;
 	    for(var i in array){
 	      if(array[i]>5 || array[i]<0){
 	        result = false;
@@ -174,9 +188,13 @@ var game_engine = {
     	  this.game_state.punts[2].position = array[2];
     	  this.advance_phase();
 	    }
-  	  return result;
+	  }else{
+	    result = false;
 	  }
-	  return false;
+	  this.game_state.punts[0].ware = this.game_state.wares[wares[0]];
+  	this.game_state.punts[1].ware = this.game_state.wares[wares[1]];
+  	this.game_state.punts[2].ware = this.game_state.wares[wares[2]];
+    return result;
 	},
 	
 	start_new_auction_phase:function(action){
@@ -236,10 +254,12 @@ var game_engine = {
 	  return this.choose_share(player, share);
 	},
 	
-	choose_share:function(player, share){
+	choose_share:function(player, share, buy){
 	  if(this.game_state.shares[share] > 0){
 	    player.shares[share] += 1;
-	    player.money -= (this.game_state.share_prices[share] == 0 ? 5 : this.game_state.share_prices[share]);
+	    if(buy){
+	      player.money -= (this.game_state.share_prices[share] == 0 ? 5 : this.game_state.share_prices[share]);
+	    }
   		this.game_state.shares[share] -= 1;
   		this.game_state.shares_array.remove(share);
   		return true;
@@ -348,6 +368,7 @@ var game_engine = {
 					this.compute_share_price();
 					if(this.end_conditions_met()) {
 						this.game_state.phase = 7; //game over
+						this.game_state.started = false;
 						this.find_out_winner();
 					} else {
 						this.game_state.phase = -1;

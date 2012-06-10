@@ -16,11 +16,11 @@ function GameState(){
 	this.players = [];
 	this.shares = {};
 	this.share_prices = {};
-	this.spaces = [];
-	this.punts = [];
-	this.wares = [];
-	this.dices = [];
-	this.current_player_id = 0;
+	this.init();
+};
+
+GameState.prototype.init = function(){
+  this.current_player_id = 0;
 	this.captain_id = 0;
 	this.phase = 0;
 	this.max_player_id = -1;
@@ -30,10 +30,11 @@ function GameState(){
 	this.auction_count = 3;
 	this.auction_players = [];
 	this.started = false;
-	this.init();
-};
+	this.spaces = [];
+	this.punts = [];
+	this.wares = [];
+	this.dices = [];
 
-GameState.prototype.init = function(){
 	for(var i=0; i<3; i++){
 		this.punts.push(new Punt(i));
 	}

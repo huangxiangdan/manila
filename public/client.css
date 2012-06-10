@@ -37,6 +37,10 @@ body{
   float:right;
 }
 
+#move_punt_panel select{
+  width:100px;
+}
+
 #palyers_panel .player{
   float:left;
   color:white;
