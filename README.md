@@ -8,7 +8,7 @@
 其次需要  
 * npm install express@2.5.11
 * npm install socket.io
-* npm install jade
+* npm install jade  
 部署完成之后运行http://localhost:3000
 
 
