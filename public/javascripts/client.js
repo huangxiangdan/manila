@@ -199,6 +199,9 @@ function show_phase_panel(pre_game_state){
         start_new_auction_phase();
         break;
       case 1:
+        if(my_id != game_state.current_player_id){
+          return;
+        }
         $('#choose_share_panel').show();
         $('#choose_share').empty();
         for(var i=0; i<game_state.wares.length; i++){
